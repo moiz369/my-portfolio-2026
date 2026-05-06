@@ -1,167 +1,109 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Sun, Moon, Download, Linkedin, Mail, Send,
   ChevronDown, X, Code2, Layers, Brain,
   MapPin, Phone, GraduationCap, Briefcase,
   Zap, Target, TrendingUp, Award, CheckCircle2,
-  ArrowRight, Cpu, Globe, Server
+  ArrowRight, Cpu, Globe, Server, Sparkles,
+  Terminal, Coffee, Rocket, Users
 } from 'lucide-react'
 
-// ─── CHATBOT KNOWLEDGE BASE ──────────────────────────────────────────────────
+// ─── CHATBOT ──────────────────────────────────────────────────────────────────
 
-const KNOWLEDGE = `
-IDENTITY:
-- Full name: Moiz Khan
-- Title: Full Stack Web Developer
-- Email: moizkh369@gmail.com
-- Phone: 03335016753
-- Location: H9, Islamabad, Pakistan
-
-PROFESSIONAL SUMMARY (exact from resume):
-Passionate Full Stack Web Developer and Software Engineer dedicated to building robust, end-to-end web applications. A natural leader and collaborative team player with a proven track record of guiding technical projects to success. Highly detail-oriented and committed to delivering flawless, high-quality solutions from conception to deployment. Driven by a vision to leverage advanced technologies to build scalable, revolutionary products that create a positive global impact.
-
-EDUCATION:
-- University: National University of Modern Languages (NUML), Islamabad, Pakistan
-- Degree: Bachelor of Science in Software Engineering
-- Duration: September 2022 – Present
-- GPA: 3.9 / 4.0
-
-TECHNICAL PROJECTS (exact from resume):
-
-1. Automated Dermatology Assistant (FYP) — March 2025 to May 2026
-   - Built an AI-integrated healthcare web app capable of detecting 2 major skin conditions with 85%+ accuracy
-   - Optimized the AI prediction pipeline to deliver diagnostic results in under 2 seconds
-   - Designed a patient dashboard to track skin health progress
-   - Implemented location-based services to match users with nearby dermatologists and book appointments
-   - Technologies: Django, SQL, Python, AI Integration
-
-2. Jewellery Store Management System — November 2025 to December 2025
-   - Architected a full-stack e-commerce inventory portal handling 500+ products
-   - Developed a responsive frontend and robust RESTful API for database querying, pricing, and catalog management
-   - Technologies: MongoDB, Express.js, React, Node.js (MERN Stack)
-
-3. Arts and Crafts eCommerce Platform — October 2024 to November 2024
-   - Built a niche e-commerce platform with a scalable backend supporting 1000+ concurrent users
-   - Implemented secure user authentication, input validation, and real-time database integrations
-   - Technologies: HTML, CSS, JavaScript, PHP, SQL
-
-4. Car Parking Management System — October 2022 to November 2022
-   - Developed centralized administrative software for real-time parking tracking and automated billing, scaling to 5000+ vehicles
-   - Digitized the entire manual entry system, improving workflow efficiency by 100% and reducing logging errors
-   - Migrated core C++ console logic to a Java-based GUI for better accessibility
-   - Technologies: Java, C++, GUI Design, OOP
-
-SKILLS (exact from resume):
-Python, Java, C++, JavaScript, HTML, CSS, React, Node.js, Django, Express.js, AJAX, SQL, GitHub, Visual Studio, Android Studio, WordPress, Leadership, Team Collaboration, Problem Solving, Project Management, Detail-Oriented
-
-LANGUAGES:
-- English: Professional proficiency
-- Urdu: Native
-
-INTERESTS & HOBBIES:
-Vibe Coding, Self Improvement, Exploring New Things, Gym, Music
-`
-
-// Smart bot that patterns against the knowledge base
 function getBotReply(rawMsg) {
-  // Normalize pronouns so "what are his skills?" works exactly like "what are moiz's skills?"
   const m = rawMsg.toLowerCase()
-    .replace(/\b(he|his|him|this guy|the guy|this person|this developer|their)\b/g, 'moiz')
-    .replace(/\b(my|i am|i'm|i've|i have|i do|i know|i built|i work|i use|i can)\b/g, 'moiz')
+    .replace(/\b(he|his|him|this guy|this person|this developer|their|they)\b/g, 'moiz')
+    .replace(/\b(my|i am|i'm|i've|i have|i do|i know|i built|i work|i use|i can|myself)\b/g, 'moiz')
     .replace(/\bme\b/g, 'moiz')
 
-  // ── Greetings ──────────────────────────────────────────────────────────────
-  if (m.match(/^(hi|hey|hello|sup|what.?s up|yo|howdy|hiya)[\s!?]*$/))
-    return "Hey! 👋 I'm Moiz-Bot, trained on Moiz's actual resume. Ask me anything — skills, projects, GPA, how to hire him, or just say 'tell me everything'!"
+  if (m.match(/^(hi|hey|hello|sup|yo|howdy)[\s!?]*$/))
+    return "Hey! 👋 I'm Moiz-Bot, trained on Moiz's full resume. Ask me anything — skills, projects, GPA, availability, or how to hire him. Or just say 'tell me everything'!"
 
-  if (m.match(/who are you|what are you|introduce yourself|what is this/))
-    return "I'm Moiz-Bot 🤖 — an AI assistant built into this portfolio, trained on Moiz Khan's resume. I can answer anything about his skills, projects, education, experience, and how to get in touch. What do you want to know?"
+  if (m.match(/who are you|what are you|introduce yourself|what is this bot/))
+    return "I'm Moiz-Bot 🤖 — an AI assistant built into this portfolio, trained on Moiz Khan's resume. I can answer anything about his skills, projects, education, experience, and how to get in touch!"
 
-  // ── Full overview ──────────────────────────────────────────────────────────
   if (m.match(/tell me everything|full overview|full summary|complete profile|everything about/))
-    return "Here's the full picture 🗂️\n\nMoiz Khan is a Full Stack Web Developer & Software Engineer from Islamabad, Pakistan. He's studying BSc Software Engineering at NUML with a 3.9/4.0 GPA. He's built 4 real projects: an AI Dermatology App (FYP), a MERN Jewellery Store, an Arts & Crafts eCommerce, and a Java/C++ Parking System. His stack covers Python, Django, React, Node.js, MERN, SQL, and AI integration. He speaks English (professional) and Urdu (native). Open to full-time and freelance work. 📩 moizkh369@gmail.com"
+    return "Here's the full picture 🗂️\n\nMoiz Khan is a Full Stack Web Developer & Software Engineer from Islamabad, Pakistan. BSc Software Engineering at NUML with a 3.9/4.0 GPA. He's built 4 real projects: AI Dermatology App (FYP), MERN Jewellery Store, Arts & Crafts eCommerce, and a Java/C++ Parking System. Stack: Python, Django, React, Node.js, MERN, SQL, AI Integration. Open to full-time & freelance work.\n\n📩 moizkh369@gmail.com"
 
-  // ── Professional summary / About ──────────────────────────────────────────
   if (m.match(/summar|about|who is|overview|professional|background|descri|what does moiz do|what do/))
     return "Moiz is a passionate Full Stack Web Developer & Software Engineer dedicated to building robust, end-to-end web applications. He's a natural leader, highly detail-oriented, and committed to delivering flawless solutions from conception to deployment. His vision: leverage advanced technologies to build scalable, revolutionary products with a positive global impact. 🌍"
 
-  // ── Skills ────────────────────────────────────────────────────────────────
   if (m.match(/skill|tech|language|framework|stack|know|use|work with|tool|capabilit|expertise|proficien|what can/))
-    return "From his resume 📋\n\n💻 Languages: Python, Java, C++, JavaScript, HTML, CSS, SQL\n⚙️ Frameworks: React, Node.js, Django, Express.js, AJAX, WordPress\n🗄️ Databases: SQL, MongoDB\n🛠️ Tools: GitHub, Visual Studio, Android Studio\n🧠 Soft Skills: Leadership, Team Collaboration, Problem Solving, Project Management, Detail-Oriented"
+    return "From his resume 📋\n\n💻 Languages: Python, Java, C++, JavaScript, HTML, CSS, SQL\n⚙️ Frameworks: React, Node.js, Django, Express.js, AJAX, WordPress\n🗄️ Databases: SQL, MongoDB\n🛠️ Tools: GitHub, Visual Studio, Android Studio\n🧠 Soft Skills: Leadership, Team Collaboration, Problem Solving, Project Management"
 
-  // ── All projects overview ──────────────────────────────────────────────────
   if (m.match(/project|portfolio|what.*(built|made|creat|develop|work)/))
-    return "Moiz has 4 projects on his resume 🚀\n\n🩺 AI Dermatology Assistant (FYP) — Django, Python, AI\n💎 Jewellery Store — MERN Stack (500+ products)\n🎨 Arts & Crafts eCommerce — PHP/SQL (1000+ users)\n🚗 Car Parking System — Java/C++ (5000+ vehicles)\n\nAsk about any specific one for full details!"
+    return "Moiz has 4 projects on his resume 🚀\n\n🩺 AI Dermatology Assistant (FYP) — Django, Python, AI\n💎 Jewellery Store — MERN Stack (500+ products)\n🎨 Arts & Crafts eCommerce — PHP/SQL (1000+ users)\n🚗 Car Parking System — Java/C++ (5000+ vehicles)\n\nAsk about any one for full details!"
 
-  // ── FYP / Dermatology ──────────────────────────────────────────────────────
   if (m.match(/dermatol|skin|fyp|final year|healthcare|ai project|85|detection/))
-    return "🩺 Automated Dermatology Assistant (FYP) — Mar 2025 to May 2026\n\nAI-integrated healthcare web app that detects 2 major skin conditions with 85%+ accuracy in under 2 seconds. Includes:\n• Patient dashboard for tracking skin health\n• Location-based dermatologist matching\n• Appointment booking system\n\nStack: Django, SQL, Python, AI Integration"
+    return "🩺 Automated Dermatology Assistant (FYP) — Mar 2025 to May 2026\n\nAI-integrated healthcare web app detecting 2 major skin conditions with 85%+ accuracy in under 2 seconds. Includes:\n• Patient dashboard for skin health tracking\n• Location-based dermatologist matching\n• Appointment booking system\n\nStack: Django, SQL, Python, AI Integration"
 
-  // ── Jewellery Store ────────────────────────────────────────────────────────
-  if (m.match(/jewel|mern|store|inventory|ecommerce.*mern|mongodb/))
-    return "💎 Jewellery Store Management System — Nov to Dec 2025\n\nFull-stack e-commerce portal handling 500+ products. Built with:\n• Responsive React frontend\n• RESTful API for catalog & pricing\n• Rapid database querying\n\nStack: MongoDB, Express.js, React, Node.js (MERN)"
+  if (m.match(/jewel|mern|ecommerce.*mern|mongodb|500.*product/))
+    return "💎 Jewellery Store Management System — Nov to Dec 2025\n\nFull-stack e-commerce portal handling 500+ products. Features:\n• Responsive React frontend\n• RESTful API for catalog & pricing\n• Rapid database querying\n\nStack: MongoDB, Express.js, React, Node.js (MERN)"
 
-  // ── Arts & Crafts ──────────────────────────────────────────────────────────
-  if (m.match(/art|craft|php|1000|ecommerce.*php/))
-    return "🎨 Arts & Crafts eCommerce Platform — Oct to Nov 2024\n\nNiche eCommerce platform with scalable backend supporting 1000+ concurrent users. Features:\n• Secure user authentication\n• Input validation\n• Real-time database integrations\n\nStack: HTML, CSS, JavaScript, PHP, SQL"
+  if (m.match(/art|craft|php|1000.*user|ecommerce.*php/))
+    return "🎨 Arts & Crafts eCommerce Platform — Oct to Nov 2024\n\nNiche eCommerce platform supporting 1000+ concurrent users. Features:\n• Secure user authentication & input validation\n• Real-time database integrations\n• Full shopping & order management\n\nStack: HTML, CSS, JavaScript, PHP, SQL"
 
-  // ── Parking ────────────────────────────────────────────────────────────────
   if (m.match(/park|car|5000|java.*project|desktop|c\+\+.*project/))
-    return "🚗 Car Parking Management System — Oct to Nov 2022\n\nCentralized admin software tracking 5000+ vehicles in real-time with automated billing. Key achievements:\n• 100% workflow efficiency improvement\n• Digitized entire manual entry system\n• Migrated C++ console to Java GUI\n\nStack: Java, C++, GUI Design, OOP"
+    return "🚗 Car Parking Management System — Oct to Nov 2022\n\nCentralized admin software tracking 5000+ vehicles with automated billing. Achievements:\n• 100% workflow efficiency improvement\n• Digitized entire manual entry system\n• Migrated C++ console to Java GUI\n\nStack: Java, C++, GUI Design, OOP"
 
-  // ── Education ─────────────────────────────────────────────────────────────
   if (m.match(/edu|degree|university|numl|study|student|academ|school|college|qualif/))
-    return "🎓 BSc Software Engineering\nNational University of Modern Languages (NUML), Islamabad\n📅 September 2022 – Present\n⭐ GPA: 3.9 / 4.0 (Distinction level)"
+    return "🎓 BSc Software Engineering\nNational University of Modern Languages (NUML), Islamabad\n📅 September 2022 – Present\n⭐ GPA: 3.9 / 4.0 — Distinction level"
 
-  // ── GPA ───────────────────────────────────────────────────────────────────
   if (m.match(/gpa|grade|result|cgpa|mark|score|3\.9|distinction/))
-    return "Moiz has a GPA of 3.9 out of 4.0 at NUML 🏆 — distinction level. Impressive considering he simultaneously delivered 4 real-world projects alongside his studies!"
+    return "Moiz has a GPA of 3.9 out of 4.0 at NUML 🏆 — distinction level. Impressive considering he simultaneously shipped 4 real-world projects during his studies!"
 
-  // ── Contact ───────────────────────────────────────────────────────────────
   if (m.match(/contact|email|phone|reach|number|call|message|get in touch|how to.*contact/))
     return "📬 Here's how to reach Moiz:\n\n📧 Email: moizkh369@gmail.com\n📞 Phone: 03335016753\n📍 Location: H9, Islamabad, Pakistan\n\nHe's responsive and happy to connect!"
 
-  // ── Hiring / Availability ─────────────────────────────────────────────────
   if (m.match(/hire|job|opportun|availab|freelance|intern|recruit|open to|looking for|employ|position|role/))
-    return "Yes! Moiz is open to full-time roles, freelance projects, and internship opportunities 🚀 The best way to reach him is moizkh369@gmail.com or 03335016753. He's based in Islamabad but open to remote work too!"
+    return "Yes! Moiz is actively open to full-time roles, freelance projects, and internship opportunities 🚀 Remote and on-site both work. Best way: moizkh369@gmail.com or 03335016753."
 
-  // ── Hobbies ───────────────────────────────────────────────────────────────
-  if (m.match(/hobb|interest|life|outside|personal|gym|music|vibe|free time|fun|passtime/))
+  if (m.match(/hobb|interest|life|outside|personal|gym|music|vibe|free time|fun/))
     return "Outside of coding, Moiz is into 💪 Gym & Fitness, 🎵 Music, ⚡ Vibe Coding sessions, 📈 Self Improvement, and 🌍 Exploring New Things. He believes a sharp developer needs a sharp life!"
 
-  // ── Languages spoken ──────────────────────────────────────────────────────
   if (m.match(/english|urdu|speak|language.*speak|spoken/))
-    return "Moiz speaks English at a professional proficiency level and Urdu natively. 🌐 Both are listed on his resume."
+    return "Moiz speaks English at a professional proficiency level and Urdu natively. 🌐"
 
-  // ── Soft skills / Leadership ──────────────────────────────────────────────
   if (m.match(/soft skill|leader|team|collaborat|manag|communicat|strength|best at/))
-    return "His resume highlights these soft skills: Leadership, Team Collaboration, Problem Solving, Project Management, and Detail-Oriented. He has a track record of leading full technical teams to successful delivery. 💼"
+    return "His resume highlights: Leadership, Team Collaboration, Problem Solving, Project Management, and Detail-Oriented. He's led multiple technical teams to successful delivery. 💼"
 
-  // ── Specific tech ─────────────────────────────────────────────────────────
   if (m.match(/python|django/))
-    return "Python and Django are core to Moiz's backend stack. His FYP uses Django with AI integration, and he's comfortable with Django REST APIs and SQL databases. 🐍"
+    return "Python and Django are core to Moiz's backend stack. His FYP uses Django with AI integration. He builds Django REST APIs and is comfortable with SQL databases. 🐍"
 
   if (m.match(/react|frontend|ui/))
-    return "Moiz builds frontends with React.js — demonstrated in his MERN Jewellery Store project with a fully responsive UI and RESTful API integration. ⚛️"
+    return "Moiz builds frontends with React.js — demonstrated in his MERN Jewellery Store with a fully responsive UI and RESTful API integration. ⚛️"
 
   if (m.match(/node|express|mern/))
-    return "Full MERN stack (MongoDB, Express, React, Node.js) is one of Moiz's core stacks. His Jewellery Store project is a complete MERN application handling 500+ products. 🟢"
+    return "Full MERN stack (MongoDB, Express, React, Node.js) is one of Moiz's core stacks. His Jewellery Store project is a complete MERN application. 🟢"
 
   if (m.match(/sql|database|mongo/))
-    return "Moiz works with both SQL (used in Dermatology App and Arts & Crafts platform) and MongoDB (MERN Jewellery Store). Database design is a consistent part of every project he's built. 🗄️"
+    return "Moiz works with both SQL (Dermatology App, Arts & Crafts) and MongoDB (MERN Jewellery Store). Database design is a consistent part of every project he's built. 🗄️"
 
   if (m.match(/java|c\+\+|oop/))
-    return "Java and C++ are part of Moiz's foundational skills — used in his Car Parking Management System to build a GUI desktop app with OOP principles. His first university project! ☕"
+    return "Java and C++ are part of Moiz's foundational skills — used in his Car Parking System with OOP principles and a Java GUI desktop app. ☕"
 
   if (m.match(/wordpress|ajax/))
-    return "WordPress and AJAX are listed in Moiz's skills — useful for CMS-based projects and dynamic frontend interactions. 🌐"
+    return "WordPress and AJAX are in Moiz's skills — useful for CMS-based projects and dynamic frontend interactions. 🌐"
 
-  if (m.match(/github|git/))
+  if (m.match(/github|git|version control/))
     return "GitHub is Moiz's version control tool of choice — listed in his tools section and used across all projects. 🐙"
 
-  // ── Fallback ──────────────────────────────────────────────────────────────
-  return "Good question! Moiz is a Full Stack Developer (BSc SE at NUML, GPA 3.9/4.0) skilled in React, Django, Node.js, MERN Stack, and AI integration. Try asking about his skills, a specific project, his education, or how to hire him! 🚀"
+  // General programming / tech questions
+  if (m.match(/what is react|what is django|what is mern|what is node|what is python/))
+    return "Great tech question! While I'm focused on Moiz's profile, I can say he works hands-on with these technologies daily. Want to know specifically how he uses them in his projects? 😊"
+
+  if (m.match(/best language|best framework|which is better/))
+    return "That's a great debate! From Moiz's experience: Python/Django shines for backend & AI, React for frontend, and Node.js for real-time apps. He picks the right tool for the job rather than one-size-fits-all. 🛠️"
+
+  if (m.match(/salary|pay|compensat|expect|rate/))
+    return "For salary or rate details, that's best discussed directly with Moiz 😊 Reach him at moizkh369@gmail.com — he's open to negotiation based on the role and scope."
+
+  if (m.match(/cv|resume|download/))
+    return "You can download Moiz's full resume using the 'Download Resume' button at the top of this page! It has all his project details, skills, and education. 📄"
+
+  // Fallback — always mention email
+  return "That's a great question! For more personalised queries like this, reach out to Moiz directly at 📧 moizkh369@gmail.com — he'll be happy to answer in detail. Or try asking me about his skills, projects, education, or availability! 🚀"
 }
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
@@ -175,55 +117,55 @@ const TYPEWRITER = [
 ]
 
 const STATS = [
-  { value: 4,    suffix: '+', label: 'Projects Shipped',    icon: <Briefcase size={20} />, color: '#06b6d4' },
-  { value: 3.9,  suffix: '/4', label: 'Academic GPA',       icon: <GraduationCap size={20} />, color: '#818cf8' },
-  { value: 10,   suffix: '+', label: 'Technologies',         icon: <Cpu size={20} />, color: '#a855f7' },
-  { value: 85,   suffix: '%', label: 'AI Model Accuracy',   icon: <Brain size={20} />, color: '#10b981' },
+  { value: 4,    suffix: '+',  label: 'Projects Shipped',  icon: <Briefcase size={20} />, color: '#06b6d4' },
+  { value: 3.9,  suffix: '/4', label: 'Academic GPA',      icon: <GraduationCap size={20} />, color: '#818cf8' },
+  { value: 10,   suffix: '+',  label: 'Technologies',      icon: <Cpu size={20} />, color: '#a855f7' },
+  { value: 85,   suffix: '%',  label: 'AI Model Accuracy', icon: <Brain size={20} />, color: '#10b981' },
 ]
 
 const SERVICES = [
   {
     icon: <Globe size={26} />,
     title: 'Full Stack Web Apps',
-    desc: 'End-to-end web applications using React on the frontend and Django or Node.js on the backend. From database design to deployment.',
+    desc: 'End-to-end web applications using React on the frontend and Django or Node.js on the backend — from database design to deployment.',
     tags: ['React', 'Django', 'Node.js', 'REST APIs'],
     color: '#06b6d4',
   },
   {
     icon: <Brain size={26} />,
     title: 'AI Integration',
-    desc: 'Embedding machine learning models into real-world applications. Skin condition detection, image classification, and predictive systems.',
-    tags: ['TensorFlow', 'Python', 'scikit-learn', 'ML APIs'],
+    desc: 'Embedding machine learning models into real-world applications — skin condition detection, image classification, and intelligent systems.',
+    tags: ['Python', 'AI/ML', 'Django', 'TensorFlow'],
     color: '#a855f7',
   },
   {
     icon: <Server size={26} />,
     title: 'Backend & APIs',
-    desc: 'Robust, scalable backend systems with clean RESTful APIs, secure JWT authentication, and optimised database queries.',
+    desc: 'Robust, scalable backend systems with clean RESTful APIs, secure authentication, and optimised database design.',
     tags: ['Django REST', 'Express.js', 'MySQL', 'MongoDB'],
     color: '#10b981',
   },
 ]
 
 const SKILL_ROWS = [
-  ['Python', 'React', 'Django', 'JavaScript', 'Node.js', 'Java', 'C++', 'SQL', 'Express.js', 'TensorFlow'],
-  ['HTML5', 'CSS3', 'MERN Stack', 'REST APIs', 'JWT Auth', 'MongoDB', 'MySQL', 'Git', 'Tailwind CSS', 'PHP'],
+  ['Python', 'React', 'Django', 'JavaScript', 'Node.js', 'Java', 'C++', 'SQL', 'Express.js', 'AJAX'],
+  ['HTML5', 'CSS3', 'MERN Stack', 'REST APIs', 'MongoDB', 'MySQL', 'Git', 'GitHub', 'WordPress', 'PHP'],
 ]
 
 const SKILL_BARS = [
-  { name: 'Python / Django',   pct: 90, color: '#06b6d4' },
+  { name: 'Python / Django',    pct: 90, color: '#06b6d4' },
   { name: 'React / JavaScript', pct: 85, color: '#818cf8' },
-  { name: 'Node.js / Express', pct: 80, color: '#a855f7' },
-  { name: 'SQL & Databases',   pct: 85, color: '#10b981' },
-  { name: 'AI / ML (TensorFlow)', pct: 75, color: '#f59e0b' },
-  { name: 'Java / C++',        pct: 78, color: '#ef4444' },
+  { name: 'Node.js / Express',  pct: 80, color: '#a855f7' },
+  { name: 'SQL & Databases',    pct: 85, color: '#10b981' },
+  { name: 'AI / ML Integration',pct: 75, color: '#f59e0b' },
+  { name: 'Java / C++',         pct: 78, color: '#ef4444' },
 ]
 
 const SKILL_CATS = [
   { label: 'Languages',   items: ['Python', 'Java', 'C++', 'JavaScript', 'HTML', 'CSS', 'SQL'], color: '#06b6d4' },
   { label: 'Frameworks',  items: ['React', 'Django', 'Node.js', 'Express.js', 'MERN', 'AJAX', 'WordPress'], color: '#818cf8' },
-  { label: 'Tools',       items: ['GitHub', 'VS Code', 'Android Studio', 'Postman'], color: '#a855f7' },
-  { label: 'Soft Skills', items: ['Leadership', 'Team Work', 'Problem Solving', 'Communication'], color: '#10b981' },
+  { label: 'Tools',       items: ['GitHub', 'Visual Studio', 'Android Studio'], color: '#a855f7' },
+  { label: 'Soft Skills', items: ['Leadership', 'Team Collaboration', 'Problem Solving', 'Project Management'], color: '#10b981' },
 ]
 
 const PROJECTS = [
@@ -231,8 +173,8 @@ const PROJECTS = [
     emoji: '🩺', num: '01',
     title: 'Automated Dermatology Assistant',
     subtitle: 'AI · Django · Healthcare · Final Year Project',
-    desc: 'AI-integrated healthcare platform detecting skin conditions with 85%+ accuracy in under 2 seconds. Includes patient dashboard, scan history, appointment booking, and location-based dermatologist matching via geolocation API.',
-    tags: ['Django', 'Python', 'TensorFlow', 'SQL', 'AI/ML'],
+    desc: 'AI-integrated healthcare platform detecting 2 major skin conditions with 85%+ accuracy in under 2 seconds. Includes patient dashboard, scan history, appointment booking, and location-based dermatologist matching.',
+    tags: ['Django', 'Python', 'SQL', 'AI Integration'],
     accent: '#06b6d4',
     highlights: ['85%+ AI Accuracy', '< 2s Detection', 'Location Matching', 'Appointment System'],
   },
@@ -240,91 +182,124 @@ const PROJECTS = [
     emoji: '💎', num: '02',
     title: 'Jewellery Store Management',
     subtitle: 'MERN Stack · E-Commerce · Full Stack',
-    desc: 'Full-stack e-commerce inventory portal architected for 500+ products. Features a robust RESTful API, JWT authentication, admin dashboard, and a fully responsive React frontend.',
-    tags: ['MongoDB', 'Express', 'React', 'Node.js', 'JWT'],
+    desc: 'Full-stack e-commerce inventory portal handling 500+ products. Features a robust RESTful API, admin dashboard, rapid database querying, and a fully responsive React frontend.',
+    tags: ['MongoDB', 'Express', 'React', 'Node.js'],
     accent: '#818cf8',
-    highlights: ['500+ Products', 'RESTful API', 'JWT Auth', 'Admin Dashboard'],
+    highlights: ['500+ Products', 'RESTful API', 'Admin Dashboard', 'Responsive UI'],
   },
   {
     emoji: '🎨', num: '03',
     title: 'Arts & Crafts eCommerce',
-    subtitle: 'Full Stack · PHP · MySQL · Scalable',
-    desc: 'Scalable eCommerce platform engineered to support 1000+ concurrent users with secure session authentication, real-time database integrations, and a complete shopping experience.',
-    tags: ['HTML', 'CSS', 'JavaScript', 'PHP', 'MySQL'],
+    subtitle: 'Full Stack · PHP · MySQL',
+    desc: 'Scalable eCommerce platform supporting 1000+ concurrent users with secure authentication, input validation, and real-time database integrations for order processing.',
+    tags: ['HTML', 'CSS', 'JavaScript', 'PHP', 'SQL'],
     accent: '#f59e0b',
-    highlights: ['1000+ Users', 'Session Auth', 'Real-time DB', 'Shopping Cart'],
+    highlights: ['1000+ Users', 'Secure Auth', 'Real-time DB', 'Order Management'],
   },
   {
     emoji: '🚗', num: '04',
     title: 'Car Parking Management',
     subtitle: 'Desktop App · Java · C++ · OOP',
-    desc: 'Administrative desktop software engineered to track 5000+ vehicles simultaneously with real-time slot management, reporting dashboards, and an intuitive GUI — improving workflow efficiency by 100%.',
-    tags: ['Java', 'C++', 'GUI', 'OOP', 'Data Structures'],
+    desc: 'Centralized admin desktop software tracking 5000+ vehicles with automated billing and real-time slot management. Migrated C++ console to Java GUI — improving workflow efficiency by 100%.',
+    tags: ['Java', 'C++', 'GUI', 'OOP'],
     accent: '#10b981',
-    highlights: ['5000+ Vehicles', 'Real-time Slots', 'Admin Reports', '100% Efficiency Gain'],
+    highlights: ['5000+ Vehicles', 'Automated Billing', '100% Efficiency', 'Java GUI'],
   },
-]
-
-const TIMELINE = [
-  { year: '2022', title: 'Started BSc Software Engineering', sub: 'NUML, Islamabad — GPA: 3.9/4.0', icon: <GraduationCap size={12} />, color: '#06b6d4' },
-  { year: '2023', title: 'Built First Full Stack App', sub: 'Arts & Crafts eCommerce — PHP, MySQL, 1000+ users', icon: <Code2 size={12} />, color: '#818cf8' },
-  { year: '2023', title: 'Mastered MERN Stack', sub: 'Jewellery Store Management System — 500+ products', icon: <Layers size={12} />, color: '#a855f7' },
-  { year: '2024', title: 'Entered AI/ML Development', sub: 'Integrated TensorFlow into real-world Django app', icon: <Brain size={12} />, color: '#f59e0b' },
-  { year: '2025', title: 'Final Year AI Project', sub: 'Automated Dermatology Assistant — 85%+ accuracy', icon: <Award size={12} />, color: '#10b981' },
-  { year: '2026', title: 'Graduating & Job-Ready', sub: 'Open to full-time / freelance opportunities', icon: <Target size={12} />, color: '#ef4444' },
 ]
 
 const CURRENTLY = [
   { icon: '🏗️', label: 'Building',   value: 'AI Dermatology Assistant — Final Year Project (due May 2026)' },
-  { icon: '🧠', label: 'Sharpening', value: 'AI/ML pipeline optimisation & Django REST architecture' },
+  { icon: '⚡', label: 'Sharpening', value: 'Advanced React patterns & Django REST architecture' },
   { icon: '💼', label: 'Seeking',    value: 'First full-time developer role — open to remote & on-site' },
   { icon: '🎯', label: 'Target',     value: 'Push FYP AI accuracy beyond 90% before graduation' },
 ]
 
-// ─── FRAMER VARIANTS ─────────────────────────────────────────────────────────
+const TIMELINE = [
+  { year: '2022', title: 'Started BSc Software Engineering', sub: 'NUML Islamabad — GPA: 3.9/4.0', icon: <GraduationCap size={12} />, color: '#06b6d4' },
+  { year: '2022', title: 'Built First Project', sub: 'Car Parking System — Java/C++, 5000+ vehicles', icon: <Code2 size={12} />, color: '#818cf8' },
+  { year: '2024', title: 'Full Stack eCommerce', sub: 'Arts & Crafts Platform — PHP/SQL, 1000+ users', icon: <Globe size={12} />, color: '#a855f7' },
+  { year: '2025', title: 'Mastered MERN Stack', sub: 'Jewellery Store — 500+ products, RESTful API', icon: <Layers size={12} />, color: '#f59e0b' },
+  { year: '2025', title: 'Entered AI Development', sub: 'Integrated AI into Django for skin detection at 85%+', icon: <Brain size={12} />, color: '#10b981' },
+  { year: '2026', title: 'Graduating & Job-Ready', sub: 'Open to full-time & freelance opportunities', icon: <Rocket size={12} />, color: '#ef4444' },
+]
 
+// ─── ANIMATION VARIANTS ───────────────────────────────────────────────────────
+
+// Re-animates every time element enters viewport (once: false)
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden:  { opacity: 0, y: 36 },
   visible: (i = 0) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.55, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }
+    transition: { duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }
   }),
 }
 
-// ─── REUSABLE COMPONENTS ──────────────────────────────────────────────────────
-
-function Section({ id, children, className = '' }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-  return (
-    <motion.section id={id} ref={ref} initial="hidden" animate={inView ? 'visible' : 'hidden'} className={`px-6 ${className}`}>
-      {children}
-    </motion.section>
-  )
+const fadeIn = {
+  hidden:  { opacity: 0, scale: 0.96 },
+  visible: (i = 0) => ({
+    opacity: 1, scale: 1,
+    transition: { duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }
+  }),
 }
 
-function Heading({ children, sub }) {
+const slideLeft = {
+  hidden:  { opacity: 0, x: -40 },
+  visible: (i = 0) => ({
+    opacity: 1, x: 0,
+    transition: { duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }
+  }),
+}
+
+// ─── REUSABLE: motion div that re-animates on every scroll ────────────────────
+
+function Reveal({ children, variants = fadeUp, custom = 0, className = '' }) {
   return (
-    <motion.div variants={fadeUp} className="text-center mb-14">
-      <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-3">{children}</h2>
-      {sub && <p className="text-sm text-slate-400 mt-3 max-w-md mx-auto">{sub}</p>}
-      <div className="w-16 h-1 mx-auto rounded-full mt-4 shimmer-bar" />
+    <motion.div
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, margin: '-60px' }}
+      variants={variants}
+      custom={custom}
+    >
+      {children}
     </motion.div>
   )
 }
 
-// Animated counter
+// ─── HEADING ─────────────────────────────────────────────────────────────────
+
+function Heading({ children, sub }) {
+  return (
+    <Reveal className="text-center mb-14">
+      <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-3">{children}</h2>
+      {sub && <p className="text-sm text-slate-400 mt-3 max-w-md mx-auto">{sub}</p>}
+      <div className="w-16 h-1 mx-auto rounded-full mt-4 shimmer-bar" />
+    </Reveal>
+  )
+}
+
+// ─── ANIMATED COUNTER ────────────────────────────────────────────────────────
+
 function Counter({ value, suffix }) {
   const [display, setDisplay] = useState(0)
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true })
+  const [inView, setInView] = useState(false)
+
   useEffect(() => {
-    if (!inView) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); else setInView(false) },
+      { threshold: 0.5 }
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!inView) { setDisplay(0); return }
     const isDecimal = value % 1 !== 0
-    const duration = 1400
-    const steps = 50
-    const increment = value / steps
-    let current = 0
+    const duration = 1400; const steps = 50
+    const increment = value / steps; let current = 0
     const timer = setInterval(() => {
       current = Math.min(current + increment, value)
       setDisplay(isDecimal ? parseFloat(current.toFixed(1)) : Math.round(current))
@@ -332,26 +307,26 @@ function Counter({ value, suffix }) {
     }, duration / steps)
     return () => clearInterval(timer)
   }, [inView, value])
+
   return <span ref={ref}>{display}{suffix}</span>
 }
 
-// Skill bar
+// ─── SKILL BAR ───────────────────────────────────────────────────────────────
+
 function SkillBar({ name, pct, color, dark }) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true })
   return (
-    <div ref={ref} className="mb-4">
+    <div className="mb-4">
       <div className="flex justify-between text-sm font-semibold mb-1.5">
-        <span>{name}</span>
-        <span style={{ color }}>{pct}%</span>
+        <span>{name}</span><span style={{ color }}>{pct}%</span>
       </div>
       <div className={`h-2 rounded-full ${dark ? 'bg-white/8' : 'bg-black/8'}`}>
         <motion.div
           initial={{ width: 0 }}
-          animate={inView ? { width: `${pct}%` } : {}}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          whileInView={{ width: `${pct}%` }}
+          viewport={{ once: false }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           className="h-full rounded-full"
-          style={{ background: `linear-gradient(90deg, ${color}99, ${color})` }}
+          style={{ background: `linear-gradient(90deg, ${color}80, ${color})` }}
         />
       </div>
     </div>
@@ -366,12 +341,10 @@ export default function App() {
   const [typeIdx, setTypeIdx] = useState(0)
   const [charIdx, setCharIdx] = useState(0)
   const [typing, setTyping] = useState(true)
-  const [cursor, setCursor] = useState({ x: -100, y: -100 })
-  const [cursorBig, setCursorBig] = useState(false)
   const [scrollPct, setScrollPct] = useState(0)
   const [chatOpen, setChatOpen] = useState(false)
   const [chatMsgs, setChatMsgs] = useState([
-    { from: 'bot', text: "Hi! I'm Moiz-Bot 🤖 I'm trained on Moiz's full resume. Ask me anything — his skills, projects, GPA, how to hire him, or anything else!" }
+    { from: 'bot', text: "Hi! I'm Moiz-Bot 🤖 Trained on Moiz's full resume. Ask me anything about his skills, projects, GPA, or how to hire him!" }
   ])
   const [chatInput, setChatInput] = useState('')
   const [botTyping, setBotTyping] = useState(false)
@@ -381,23 +354,14 @@ export default function App() {
 
   useEffect(() => { document.documentElement.classList.toggle('dark', dark) }, [dark])
 
-  // Scroll progress bar
+  // Scroll progress
   useEffect(() => {
-    const onScroll = () => {
+    const fn = () => {
       const el = document.documentElement
       setScrollPct((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100)
     }
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  // Custom cursor
-  useEffect(() => {
-    const move = e => setCursor({ x: e.clientX, y: e.clientY })
-    const over = e => setCursorBig(!!e.target.closest('a,button,[role="button"],input,textarea'))
-    window.addEventListener('mousemove', move)
-    window.addEventListener('mouseover', over)
-    return () => { window.removeEventListener('mousemove', move); window.removeEventListener('mouseover', over) }
+    window.addEventListener('scroll', fn)
+    return () => window.removeEventListener('scroll', fn)
   }, [])
 
   // Typewriter
@@ -426,29 +390,29 @@ export default function App() {
     setTimeout(() => {
       setChatMsgs(prev => [...prev, { from: 'bot', text: getBotReply(msg) }])
       setBotTyping(false)
-    }, 600 + Math.random() * 400)
+    }, 500 + Math.random() * 400)
   }, [chatInput, botTyping])
 
   // Theme tokens
-  const bg     = dark ? 'bg-[#050818]'       : 'bg-slate-50'
-  const card   = dark ? 'bg-[#0d1225]/80'    : 'bg-white/85'
+  const bg     = dark ? 'bg-[#050818]' : 'bg-slate-50'
+  const card   = dark ? 'bg-[#0d1225]/80' : 'bg-white/85'
   const border = dark ? 'border-white/[0.07]' : 'border-black/[0.07]'
-  const muted  = dark ? 'text-slate-400'     : 'text-slate-500'
-  const navBg  = dark ? 'bg-[#050818]/88'    : 'bg-slate-50/88'
+  const muted  = dark ? 'text-slate-400' : 'text-slate-500'
+  const navBg  = dark ? 'bg-[#050818]/90' : 'bg-slate-50/90'
 
   return (
     <div className={`min-h-screen font-[Outfit] ${bg} ${dark ? 'text-slate-100' : 'text-slate-900'} transition-colors duration-300`}>
 
-      {/* ── Scroll progress bar ─────────────────────────────── */}
-      <div className="fixed top-0 left-0 right-0 z-[9999] h-0.5" style={{ background: 'rgba(0,0,0,0.1)' }}>
-        <div className="h-full shimmer-bar transition-all duration-100" style={{ width: `${scrollPct}%` }} />
+      {/* ── Scroll progress ─────────────────────────────────── */}
+      <div className="fixed top-0 left-0 right-0 z-[9999] h-[3px]" style={{ background: 'rgba(0,0,0,0.1)' }}>
+        <motion.div
+          className="h-full shimmer-bar"
+          style={{ width: `${scrollPct}%` }}
+          transition={{ duration: 0.1 }}
+        />
       </div>
 
-      {/* ── Custom cursor ───────────────────────────────────── */}
-      <div className={`cursor-outer ${cursorBig ? 'expanded' : ''}`} style={{ left: cursor.x, top: cursor.y }} />
-      <div className="cursor-dot" style={{ left: cursor.x, top: cursor.y }} />
-
-      {/* ── Background orbs ─────────────────────────────────── */}
+      {/* ── Gradient orbs ───────────────────────────────────── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="orb-1 absolute w-[600px] h-[600px] rounded-full -top-32 -left-32"
           style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.10) 0%, transparent 70%)' }} />
@@ -459,7 +423,7 @@ export default function App() {
       </div>
 
       {/* ── NAV ─────────────────────────────────────────────── */}
-      <nav className={`glass fixed top-0.5 left-0 right-0 z-50 ${navBg} border-b ${border}`}
+      <nav className={`glass fixed top-[3px] left-0 right-0 z-50 ${navBg} border-b ${border}`}
         style={{ backdropFilter: 'blur(20px)' }}>
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <span className="grad-text text-2xl font-black tracking-tight">MK.</span>
@@ -488,393 +452,533 @@ export default function App() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border border-cyan-400/30"
                 style={{ background: 'rgba(6,182,212,0.07)' }}>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" />
+                <motion.span
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full bg-emerald-400 block shadow-[0_0_8px_#10b981]"
+                />
                 <span className="text-sm font-semibold text-cyan-400">Open to opportunities</span>
               </div>
             </motion.div>
 
-            <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, delay: 0.1 }}
+            <motion.h1
+              initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
               className="text-5xl md:text-7xl font-black leading-none tracking-tight mb-6">
               Hi, I'm <span className="grad-text">Moiz Khan.</span>
             </motion.h1>
 
-            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className={`text-xl md:text-3xl font-bold mb-6 min-h-10 ${dark ? 'text-slate-300' : 'text-slate-600'}`}>
               {typeText}<span className="type-cursor">|</span>
             </motion.div>
 
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className={`text-base md:text-lg leading-relaxed mb-10 max-w-xl mx-auto ${muted}`}>
               I build robust, end-to-end web applications and integrate AI to create scalable, revolutionary digital products.
             </motion.p>
 
-            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
+            <motion.div
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
               className="flex gap-4 justify-center flex-wrap">
-              <a href="#projects"
-                className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:-translate-y-1"
+              <motion.a
+                href="#projects"
+                whileHover={{ y: -3, boxShadow: '0 12px 35px rgba(6,182,212,0.45)' }}
+                whileTap={{ scale: 0.97 }}
+                className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm text-white"
                 style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)', boxShadow: '0 8px 28px rgba(6,182,212,0.35)' }}>
                 View My Work <ArrowRight size={15} />
-              </a>
-              <a href="/resume.pdf" download="Moiz_Khan_Resume.pdf"
-                className={`flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm border ${border} ${card} glass transition-all hover:-translate-y-1`}>
+              </motion.a>
+              <motion.a
+                href="/resume.pdf"
+                download="Moiz_Khan_Resume.pdf"
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.97 }}
+                className={`flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm border ${border} ${card} glass`}>
                 <Download size={15} /> Download Resume
-              </a>
+              </motion.a>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.5 }}
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ delay: 1.3, duration: 0.5 }}
               className={`mt-20 float ${muted} flex justify-center`}>
-              <a href="#about"><ChevronDown size={26} /></a>
+              <a href="#about">
+                <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 2, repeat: Infinity }}>
+                  <ChevronDown size={26} />
+                </motion.div>
+              </a>
             </motion.div>
           </div>
         </section>
 
         {/* ── STATS ───────────────────────────────────────────── */}
-        <Section className="py-16 max-w-5xl mx-auto">
+        <section className="px-6 py-16 max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {STATS.map((s, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}
-                className={`glass ${card} border ${border} rounded-2xl p-6 text-center hover:-translate-y-1 transition-transform`}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3"
-                  style={{ background: `${s.color}18`, color: s.color }}>
-                  {s.icon}
-                </div>
-                <div className="text-3xl font-black mb-1" style={{ color: s.color }}>
-                  <Counter value={s.value} suffix={s.suffix} />
-                </div>
-                <p className={`text-xs font-semibold ${muted}`}>{s.label}</p>
-              </motion.div>
+              <Reveal key={i} custom={i} variants={fadeIn}>
+                <motion.div
+                  whileHover={{ y: -5, boxShadow: `0 16px 40px ${s.color}25` }}
+                  className={`glass ${card} border ${border} rounded-2xl p-6 text-center`}>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-3"
+                    style={{ background: `${s.color}18`, color: s.color }}>
+                    {s.icon}
+                  </div>
+                  <div className="text-3xl font-black mb-1" style={{ color: s.color }}>
+                    <Counter value={s.value} suffix={s.suffix} />
+                  </div>
+                  <p className={`text-xs font-semibold ${muted}`}>{s.label}</p>
+                </motion.div>
+              </Reveal>
             ))}
           </div>
-        </Section>
+        </section>
 
         {/* ── ABOUT ───────────────────────────────────────────── */}
-        <Section id="about" className="py-20 max-w-5xl mx-auto">
+        <section id="about" className="px-6 py-20 max-w-5xl mx-auto">
           <Heading sub="Passionate developer. Detail-oriented engineer. Lifelong learner.">
             About <span className="grad-text">Me</span>
           </Heading>
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {[
-              {
-                icon: '⚡', title: 'The Developer',
-                body: 'I don\'t just write code — I architect solutions. From a 2-second AI diagnostic engine to a MERN inventory system handling 500+ products, every project I ship is built for scale, speed, and real-world impact.',
-                tag: 'Full Stack Engineer',
-                tagColor: '#06b6d4',
-              },
-              {
-                icon: '🎓', title: 'The Academic',
-                custom: (
+
+          {/* Row 1: Bio + Education */}
+          <div className="grid md:grid-cols-5 gap-6 mb-6">
+
+            {/* Bio — wide */}
+            <Reveal className="md:col-span-3" variants={slideLeft}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-8 h-full`}>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+                    style={{ background: 'linear-gradient(135deg, rgba(6,182,212,0.15), rgba(168,85,247,0.15))' }}>
+                    ⚡
+                  </div>
                   <div>
-                    <div className="flex items-start gap-3 mb-4">
-                      <div className="text-2xl">🏛️</div>
-                      <div>
-                        <p className="font-bold text-sm leading-tight">BSc Software Engineering</p>
-                        <p className={`text-xs mt-0.5 ${muted}`}>National University of Modern Languages</p>
-                        <p className={`text-xs ${muted}`}>Islamabad · Sep 2022 – Present</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(6,182,212,0.15)' }}>
-                        <div className="h-full rounded-full shimmer-bar" style={{ width: '97.5%' }} />
-                      </div>
-                      <span className="text-xs font-black text-cyan-400 whitespace-nowrap">3.9 / 4.0</span>
-                    </div>
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full border border-cyan-400/30 text-cyan-400"
-                      style={{ background: 'rgba(6,182,212,0.08)' }}>
-                      🏆 Distinction Level GPA
-                    </span>
+                    <h3 className="font-black text-xl">Moiz Khan</h3>
+                    <p className="text-xs font-semibold text-cyan-400">Full Stack Web Developer</p>
                   </div>
-                ),
-              },
-              {
-                icon: '🌀', title: 'The Human',
-                custom: (
-                  <div className="space-y-3">
-                    <p className={`text-sm leading-relaxed ${muted} mb-4`}>
-                      Outside the terminal, I'm building a stronger version of myself — one gym session, music track, and curiosity-driven deep dive at a time.
-                    </p>
-                    <div className="grid grid-cols-1 gap-2">
-                      {[
-                        { emoji: '⚡', text: 'Vibe Coding sessions at midnight' },
-                        { emoji: '💪', text: 'Gym — discipline that carries into code' },
-                        { emoji: '🎵', text: 'Music fuels the focus' },
-                        { emoji: '🌍', text: 'Always exploring what\'s next in tech' },
-                      ].map((item, i) => (
-                        <div key={i} className={`flex items-center gap-2.5 text-xs font-medium px-3 py-2 rounded-lg border ${border}`}
-                          style={{ background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)' }}>
-                          <span className="text-base">{item.emoji}</span>
-                          <span className={muted}>{item.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ),
-              },
-            ].map((c, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}
-                className={`glass ${card} border ${border} rounded-2xl p-8 hover:-translate-y-1.5 transition-transform duration-300`}>
-                <div className="flex items-center gap-3 mb-5">
-                  <span className="text-3xl">{c.icon}</span>
-                  <h3 className="text-lg font-black">{c.title}</h3>
                 </div>
-                {c.body && (
-                  <>
-                    <p className={`text-sm leading-relaxed mb-4 ${muted}`}>{c.body}</p>
-                    <span className="inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full"
-                      style={{ background: `${c.tagColor}15`, border: `1px solid ${c.tagColor}35`, color: c.tagColor }}>
-                      {c.tag}
+                <p className={`text-sm leading-relaxed mb-6 ${muted}`}>
+                  I don't just write code — I architect solutions. From a{' '}
+                  <span className="text-cyan-400 font-semibold">2-second AI diagnostic engine</span> to a MERN inventory system handling{' '}
+                  <span className="text-purple-400 font-semibold">500+ products</span>, every project I ship is built for scale, speed, and real-world impact.
+                </p>
+                <p className={`text-sm leading-relaxed mb-6 ${muted}`}>
+                  A natural leader and collaborative team player with a vision to leverage advanced technologies to build{' '}
+                  <span className="text-emerald-400 font-semibold">revolutionary products</span> that create a positive global impact.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['Full Stack', 'AI Integration', 'MERN Stack', 'Django', 'Problem Solver', 'Team Leader'].map(tag => (
+                    <span key={tag} className="text-xs font-bold px-3 py-1.5 rounded-full"
+                      style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)', color: '#67e8f9' }}>
+                      {tag}
                     </span>
-                  </>
-                )}
-                {c.custom}
+                  ))}
+                </div>
               </motion.div>
-            ))}
+            </Reveal>
+
+            {/* Education — narrow */}
+            <Reveal className="md:col-span-2" variants={fadeUp} custom={1}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-8 h-full`}>
+                <div className="text-3xl mb-4">🎓</div>
+                <h3 className="font-black text-lg mb-1">Education</h3>
+                <p className="text-xs font-bold text-cyan-400 mb-4">Academic Excellence</p>
+                <p className="font-bold text-sm mb-1">BSc Software Engineering</p>
+                <p className={`text-xs mb-1 ${muted}`}>National University of Modern Languages</p>
+                <p className={`text-xs mb-5 ${muted}`}>Islamabad · Sep 2022 – Present</p>
+
+                <div className="mb-2 flex justify-between text-xs font-semibold">
+                  <span className={muted}>GPA Progress</span>
+                  <span className="text-cyan-400 font-black">3.9 / 4.0</span>
+                </div>
+                <div className={`h-2.5 rounded-full mb-4 ${dark ? 'bg-white/8' : 'bg-black/8'}`}>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '97.5%' }}
+                    viewport={{ once: false }}
+                    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="h-full rounded-full shimmer-bar"
+                  />
+                </div>
+
+                <span className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full border border-cyan-400/30 text-cyan-400"
+                  style={{ background: 'rgba(6,182,212,0.08)' }}>
+                  🏆 Distinction Level
+                </span>
+              </motion.div>
+            </Reveal>
+          </div>
+
+          {/* Row 2: Languages + Personality */}
+          <div className="grid md:grid-cols-3 gap-6 mb-6">
+            <Reveal variants={fadeUp} custom={0}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-6`}>
+                <div className="text-2xl mb-3">🌐</div>
+                <h3 className="font-black text-base mb-4">Languages Spoken</h3>
+                <div className="space-y-3">
+                  {[
+                    { lang: 'English', level: 'Professional', pct: 90, color: '#06b6d4' },
+                    { lang: 'Urdu',    level: 'Native',       pct: 100, color: '#a855f7' },
+                  ].map(l => (
+                    <div key={l.lang}>
+                      <div className="flex justify-between text-xs font-semibold mb-1">
+                        <span>{l.lang}</span>
+                        <span style={{ color: l.color }}>{l.level}</span>
+                      </div>
+                      <div className={`h-1.5 rounded-full ${dark ? 'bg-white/8' : 'bg-black/8'}`}>
+                        <motion.div
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${l.pct}%` }}
+                          viewport={{ once: false }}
+                          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+                          className="h-full rounded-full"
+                          style={{ background: l.color }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </Reveal>
+
+            <Reveal variants={fadeUp} custom={1}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-6`}>
+                <div className="text-2xl mb-3">💼</div>
+                <h3 className="font-black text-base mb-4">Soft Skills</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Leadership', 'Team Work', 'Problem Solving', 'Project Mgmt', 'Detail-Oriented', 'Communication'].map(s => (
+                    <div key={s} className={`text-xs font-semibold px-2.5 py-2 rounded-lg flex items-center gap-1.5 border ${border}`}
+                      style={{ background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
+                      <CheckCircle2 size={11} className="text-emerald-400 flex-shrink-0" /> {s}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </Reveal>
+
+            <Reveal variants={fadeUp} custom={2}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-6`}>
+                <div className="text-2xl mb-3">🎯</div>
+                <h3 className="font-black text-base mb-4">Beyond the Code</h3>
+                <div className="space-y-2">
+                  {[
+                    { emoji: '⚡', text: 'Vibe Coding sessions' },
+                    { emoji: '💪', text: 'Gym — discipline that carries into code' },
+                    { emoji: '🎵', text: 'Music fuels the focus' },
+                    { emoji: '📈', text: 'Self Improvement daily' },
+                    { emoji: '🌍', text: 'Exploring new tech & things' },
+                  ].map((h, i) => (
+                    <div key={i} className={`flex items-center gap-2.5 text-xs font-medium px-3 py-2 rounded-lg border ${border}`}
+                      style={{ background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
+                      <span className="text-base">{h.emoji}</span>
+                      <span className={muted}>{h.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            </Reveal>
           </div>
 
           {/* Currently */}
-          <motion.div variants={fadeUp} className={`glass ${card} border ${border} rounded-2xl p-7`}>
-            <div className="flex items-center gap-2.5 mb-6">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" />
-              <h3 className="font-black text-sm uppercase tracking-widest text-emerald-400">What I'm up to right now</h3>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {CURRENTLY.map((c, i) => (
-                <div key={i} className={`rounded-xl p-4 border ${border} hover:-translate-y-0.5 transition-transform`}
-                  style={{ background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
-                  <span className="text-2xl block mb-3">{c.icon}</span>
-                  <p className="text-xs font-black uppercase tracking-wider mb-1.5" style={{ color: '#06b6d4' }}>{c.label}</p>
-                  <p className={`text-xs font-medium leading-snug ${muted}`}>{c.value}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </Section>
+          <Reveal variants={fadeUp}>
+            <motion.div
+              whileHover={{ y: -2 }}
+              className={`glass ${card} border ${border} rounded-2xl p-7`}>
+              <div className="flex items-center gap-2.5 mb-6">
+                <motion.span
+                  animate={{ scale: [1, 1.4, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2.5 h-2.5 rounded-full bg-emerald-400 block shadow-[0_0_8px_#10b981]"
+                />
+                <h3 className="font-black text-sm uppercase tracking-widest text-emerald-400">What I'm up to right now</h3>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {CURRENTLY.map((c, i) => (
+                  <motion.div key={i} whileHover={{ y: -3, scale: 1.02 }}
+                    className={`rounded-xl p-4 border ${border} transition-colors`}
+                    style={{ background: dark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.02)' }}>
+                    <span className="text-2xl block mb-3">{c.icon}</span>
+                    <p className="text-xs font-black uppercase tracking-wider mb-1.5" style={{ color: '#06b6d4' }}>{c.label}</p>
+                    <p className={`text-xs font-medium leading-snug ${muted}`}>{c.value}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </Reveal>
+        </section>
 
-        {/* ── WHAT I DO ────────────────────────────────────────── */}
-        <Section className="py-20 max-w-5xl mx-auto">
-          <Heading sub="Core services I deliver with precision and care.">
+        {/* ── WHAT I DO ─────────────────────────────────────────── */}
+        <section className="px-6 py-20 max-w-5xl mx-auto">
+          <Heading sub="Core services I deliver with precision.">
             What I <span className="grad-text">Do</span>
           </Heading>
           <div className="grid md:grid-cols-3 gap-6">
             {SERVICES.map((s, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}
-                className={`glass ${card} border ${border} rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group`}
-                style={{ borderTop: `2.5px solid ${s.color}` }}>
-                <div className="w-13 h-13 w-12 h-12 rounded-xl flex items-center justify-center mb-5"
-                  style={{ background: `${s.color}18`, color: s.color }}>
-                  {s.icon}
-                </div>
-                <h3 className="text-lg font-black mb-3">{s.title}</h3>
-                <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{s.desc}</p>
-                <div className="flex flex-wrap gap-2">
-                  {s.tags.map(t => (
-                    <span key={t} className="text-xs font-bold px-2.5 py-1 rounded-lg"
-                      style={{ background: `${s.color}15`, border: `1px solid ${s.color}35`, color: s.color }}>{t}</span>
-                  ))}
-                </div>
-              </motion.div>
+              <Reveal key={i} custom={i} variants={fadeUp}>
+                <motion.div
+                  whileHover={{ y: -8, boxShadow: `0 24px 50px ${s.color}20` }}
+                  className={`glass ${card} border ${border} rounded-2xl p-8 h-full`}
+                  style={{ borderTop: `2.5px solid ${s.color}` }}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                    style={{ background: `${s.color}18`, color: s.color }}>
+                    {s.icon}
+                  </div>
+                  <h3 className="text-lg font-black mb-3">{s.title}</h3>
+                  <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{s.desc}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {s.tags.map(t => (
+                      <span key={t} className="text-xs font-bold px-2.5 py-1 rounded-lg"
+                        style={{ background: `${s.color}15`, border: `1px solid ${s.color}35`, color: s.color }}>{t}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              </Reveal>
             ))}
           </div>
-        </Section>
+        </section>
 
         {/* ── SKILLS ───────────────────────────────────────────── */}
-        <Section id="skills" className="py-20 overflow-hidden">
-          <div className="max-w-5xl mx-auto">
-            <Heading sub="Technologies I work with daily.">Skills & <span className="grad-text">Technologies</span></Heading>
+        <section id="skills" className="py-20 overflow-hidden">
+          <div className="max-w-5xl mx-auto px-6">
+            <Heading sub="Technologies I work with daily.">
+              Skills & <span className="grad-text">Technologies</span>
+            </Heading>
           </div>
 
           {SKILL_ROWS.map((row, ri) => (
             <div key={ri} className="overflow-hidden mb-4">
               <div className={`flex gap-4 w-max ${ri % 2 === 0 ? 'marquee-ltr' : 'marquee-rtl'}`}>
                 {[...row, ...row].map((skill, si) => (
-                  <span key={si}
-                    className={`glass ${card} border ${border} text-sm font-semibold px-5 py-2.5 rounded-full whitespace-nowrap hover:-translate-y-0.5 transition-transform`}>
+                  <motion.span key={si} whileHover={{ y: -4, scale: 1.05 }}
+                    className={`glass ${card} border ${border} text-sm font-semibold px-5 py-2.5 rounded-full whitespace-nowrap`}>
                     {skill}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </div>
           ))}
 
-          <div className="max-w-5xl mx-auto mt-14 grid md:grid-cols-2 gap-10">
-            {/* Skill bars */}
-            <motion.div variants={fadeUp} className={`glass ${card} border ${border} rounded-2xl p-8`}>
-              <h3 className="font-black text-base mb-6 flex items-center gap-2">
-                <TrendingUp size={17} className="text-cyan-400" /> Proficiency
-              </h3>
-              {SKILL_BARS.map((s, i) => (
-                <SkillBar key={i} {...s} dark={dark} />
-              ))}
-            </motion.div>
+          <div className="max-w-5xl mx-auto mt-14 px-6 grid md:grid-cols-2 gap-10">
+            <Reveal variants={slideLeft}>
+              <div className={`glass ${card} border ${border} rounded-2xl p-8`}>
+                <h3 className="font-black text-base mb-6 flex items-center gap-2">
+                  <TrendingUp size={17} className="text-cyan-400" /> Proficiency
+                </h3>
+                {SKILL_BARS.map((s, i) => <SkillBar key={i} {...s} dark={dark} />)}
+              </div>
+            </Reveal>
 
-            {/* Skill category tags */}
             <div className="grid grid-cols-1 gap-4">
               {SKILL_CATS.map((cat, i) => (
-                <motion.div key={i} variants={fadeUp} custom={i}
-                  className={`glass ${card} border ${border} rounded-xl p-5`}>
-                  <h4 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: cat.color }}>{cat.label}</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {cat.items.map(s => (
-                      <span key={s} className="text-xs font-semibold px-2.5 py-1 rounded-lg"
-                        style={{ background: `${cat.color}18`, border: `1px solid ${cat.color}35`, color: cat.color }}>{s}</span>
-                    ))}
-                  </div>
-                </motion.div>
+                <Reveal key={i} custom={i} variants={fadeUp}>
+                  <motion.div
+                    whileHover={{ x: 4 }}
+                    className={`glass ${card} border ${border} rounded-xl p-5`}>
+                    <h4 className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: cat.color }}>{cat.label}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {cat.items.map(s => (
+                        <span key={s} className="text-xs font-semibold px-2.5 py-1 rounded-lg"
+                          style={{ background: `${cat.color}18`, border: `1px solid ${cat.color}35`, color: cat.color }}>{s}</span>
+                      ))}
+                    </div>
+                  </motion.div>
+                </Reveal>
               ))}
             </div>
           </div>
-        </Section>
+        </section>
 
         {/* ── PROJECTS ─────────────────────────────────────────── */}
-        <Section id="projects" className="py-20 max-w-5xl mx-auto">
-          <Heading sub="End-to-end applications built from scratch.">Technical <span className="grad-text">Projects</span></Heading>
+        <section id="projects" className="px-6 py-20 max-w-5xl mx-auto">
+          <Heading sub="End-to-end applications built from scratch.">
+            Technical <span className="grad-text">Projects</span>
+          </Heading>
           <div className="grid md:grid-cols-2 gap-6">
             {PROJECTS.map((p, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}
-                className={`glass ${card} border ${border} rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 relative overflow-hidden`}
-                style={{ borderTop: `2.5px solid ${p.accent}` }}>
-                <div className="absolute top-0 right-0 text-[110px] opacity-[0.04] select-none pointer-events-none leading-none -mt-2 -mr-2">{p.emoji}</div>
-                <div className="flex items-center justify-between mb-5">
-                  <span className="text-5xl">{p.emoji}</span>
-                  <span className="font-black text-2xl opacity-10">{p.num}</span>
-                </div>
-                <h3 className="text-lg font-black mb-1.5">{p.title}</h3>
-                <p className="text-xs font-bold mb-3" style={{ color: p.accent }}>{p.subtitle}</p>
-                <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{p.desc}</p>
-
-                {/* Highlights */}
-                <div className="grid grid-cols-2 gap-2 mb-5">
-                  {p.highlights.map((h, hi) => (
-                    <div key={hi} className="flex items-center gap-1.5 text-xs font-semibold"
-                      style={{ color: p.accent }}>
-                      <CheckCircle2 size={12} /> {h}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {p.tags.map(t => (
-                    <span key={t} className="text-xs font-bold px-2 py-1 rounded-md"
-                      style={{ background: `${p.accent}15`, border: `1px solid ${p.accent}35`, color: p.accent }}>{t}</span>
-                  ))}
-                </div>
-              </motion.div>
+              <Reveal key={i} custom={i} variants={fadeUp}>
+                <motion.div
+                  whileHover={{ y: -8, boxShadow: `0 28px 55px ${p.accent}18` }}
+                  className={`glass ${card} border ${border} rounded-2xl p-8 relative overflow-hidden h-full`}
+                  style={{ borderTop: `2.5px solid ${p.accent}` }}>
+                  <div className="absolute top-0 right-0 text-[110px] opacity-[0.04] select-none pointer-events-none leading-none -mt-2 -mr-2">{p.emoji}</div>
+                  <div className="flex items-center justify-between mb-5">
+                    <motion.span
+                      whileHover={{ scale: 1.2, rotate: 5 }}
+                      className="text-5xl inline-block">{p.emoji}
+                    </motion.span>
+                    <span className="font-black text-2xl opacity-10">{p.num}</span>
+                  </div>
+                  <h3 className="text-lg font-black mb-1.5">{p.title}</h3>
+                  <p className="text-xs font-bold mb-3" style={{ color: p.accent }}>{p.subtitle}</p>
+                  <p className={`text-sm leading-relaxed mb-5 ${muted}`}>{p.desc}</p>
+                  <div className="grid grid-cols-2 gap-2 mb-5">
+                    {p.highlights.map((h, hi) => (
+                      <div key={hi} className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: p.accent }}>
+                        <CheckCircle2 size={12} /> {h}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {p.tags.map(t => (
+                      <span key={t} className="text-xs font-bold px-2 py-1 rounded-md"
+                        style={{ background: `${p.accent}15`, border: `1px solid ${p.accent}35`, color: p.accent }}>{t}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              </Reveal>
             ))}
           </div>
-        </Section>
+        </section>
 
-        {/* ── JOURNEY / TIMELINE ───────────────────────────────── */}
-        <Section id="journey" className="py-20 max-w-3xl mx-auto">
+        {/* ── JOURNEY ──────────────────────────────────────────── */}
+        <section id="journey" className="px-6 py-20 max-w-3xl mx-auto">
           <Heading sub="Key milestones that shaped my development journey.">
             My <span className="grad-text">Journey</span>
           </Heading>
           <div className="relative pl-12">
             <div className="timeline-line" />
             {TIMELINE.map((item, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i} className="relative mb-8 last:mb-0">
-                <div className="timeline-dot" style={{ top: 6, borderColor: item.color, boxShadow: `0 0 12px ${item.color}60` }}>
-                  <div className="absolute inset-0 flex items-center justify-center" style={{ color: item.color }}>{item.icon}</div>
-                </div>
-                <div className={`glass ${card} border ${border} rounded-xl p-5 hover:-translate-y-0.5 transition-transform`}>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-xs font-black px-2 py-0.5 rounded-md" style={{ background: `${item.color}20`, color: item.color }}>{item.year}</span>
-                    <h4 className="font-bold text-sm">{item.title}</h4>
+              <Reveal key={i} custom={i} variants={slideLeft}>
+                <div className="relative mb-8 last:mb-0">
+                  <div className="timeline-dot" style={{ top: 14, borderColor: item.color, boxShadow: `0 0 12px ${item.color}60` }}>
+                    <div className="absolute inset-0 flex items-center justify-center" style={{ color: item.color }}>{item.icon}</div>
                   </div>
-                  <p className={`text-xs ${muted} ml-14`} style={{ marginLeft: 0 }}>{item.sub}</p>
+                  <motion.div
+                    whileHover={{ x: 4 }}
+                    className={`glass ${card} border ${border} rounded-xl p-5`}>
+                    <div className="flex items-center gap-3 mb-1.5">
+                      <span className="text-xs font-black px-2 py-0.5 rounded-md" style={{ background: `${item.color}20`, color: item.color }}>{item.year}</span>
+                      <h4 className="font-bold text-sm">{item.title}</h4>
+                    </div>
+                    <p className={`text-xs ${muted}`}>{item.sub}</p>
+                  </motion.div>
                 </div>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
-        </Section>
+        </section>
 
         {/* ── CONTACT ──────────────────────────────────────────── */}
-        <Section id="contact" className="py-20 max-w-5xl mx-auto">
-          <Heading sub="Let's build something great together.">Get In <span className="grad-text">Touch</span></Heading>
+        <section id="contact" className="px-6 py-20 max-w-5xl mx-auto">
+          <Heading sub="Let's build something great together.">
+            Get In <span className="grad-text">Touch</span>
+          </Heading>
           <div className="grid md:grid-cols-2 gap-8">
+
             <div className="flex flex-col gap-4">
               {[
-                { icon: <Mail size={18} />, label: 'Email', value: 'moizkh369@gmail.com', href: 'mailto:moizkh369@gmail.com' },
-                { icon: <Phone size={18} />, label: 'Phone', value: '03335016753', href: 'tel:+923335016753' },
-                { icon: <MapPin size={18} />, label: 'Location', value: 'H9, Islamabad, Pakistan', href: null },
+                { icon: <Mail size={18} />,  label: 'Email',    value: 'moizkh369@gmail.com',   href: 'mailto:moizkh369@gmail.com?subject=Hello from Portfolio&body=Hi Moiz,' },
+                { icon: <Phone size={18} />, label: 'Phone',    value: '03335016753',             href: 'tel:+923335016753' },
+                { icon: <MapPin size={18} />,label: 'Location', value: 'H9, Islamabad, Pakistan', href: null },
               ].map((item, i) => (
-                <motion.div key={i} variants={fadeUp} custom={i}>
+                <Reveal key={i} custom={i} variants={fadeUp}>
                   {item.href
-                    ? <a href={item.href} className={`glass ${card} border ${border} rounded-xl p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-all block`}>
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-cyan-400" style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)' }}>{item.icon}</div>
+                    ? <motion.a href={item.href} whileHover={{ x: 4 }}
+                        className={`glass ${card} border ${border} rounded-xl p-5 flex items-center gap-4 no-underline block`}>
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-cyan-400"
+                          style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)' }}>{item.icon}</div>
                         <div><p className={`text-xs font-semibold mb-0.5 ${muted}`}>{item.label}</p><p className="text-sm font-bold">{item.value}</p></div>
-                      </a>
+                      </motion.a>
                     : <div className={`glass ${card} border ${border} rounded-xl p-5 flex items-center gap-4`}>
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-cyan-400" style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)' }}>{item.icon}</div>
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 text-cyan-400"
+                          style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)' }}>{item.icon}</div>
                         <div><p className={`text-xs font-semibold mb-0.5 ${muted}`}>{item.label}</p><p className="text-sm font-bold">{item.value}</p></div>
                       </div>
                   }
-                </motion.div>
+                </Reveal>
               ))}
 
-              {/* Social — Email + LinkedIn only */}
-              <motion.div variants={fadeUp} custom={3} className="flex gap-3 mt-1">
-                <a href="mailto:moizkh369@gmail.com"
-                  className={`glass ${card} border ${border} w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400 hover:-translate-y-1 hover:border-cyan-400/40 transition-all`}
-                  title="Email Moiz">
-                  <Mail size={18} />
-                </a>
-                <a href="https://www.linkedin.com/in/moizkhan369" target="_blank" rel="noopener noreferrer"
-                  className={`glass ${card} border ${border} w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400 hover:-translate-y-1 hover:border-cyan-400/40 transition-all`}
-                  title="LinkedIn">
-                  <Linkedin size={18} />
-                </a>
-              </motion.div>
+              <Reveal custom={3} variants={fadeUp}>
+                <div className="flex gap-3">
+                  {[
+                    { icon: <Mail size={18} />,    href: 'mailto:moizkh369@gmail.com?subject=Hello from Portfolio&body=Hi Moiz,', title: 'Send Email' },
+                    { icon: <Linkedin size={18} />, href: 'https://www.linkedin.com/in/moizkhan369', title: 'LinkedIn' },
+                  ].map((s, i) => (
+                    <motion.a key={i} href={s.href} target={i === 1 ? '_blank' : undefined}
+                      rel="noopener noreferrer" title={s.title}
+                      whileHover={{ y: -4, scale: 1.1 }}
+                      className={`glass ${card} border ${border} w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400 hover:border-cyan-400/40`}>
+                      {s.icon}
+                    </motion.a>
+                  ))}
+                </div>
+              </Reveal>
 
-              {/* Availability badge */}
-              <motion.div variants={fadeUp} custom={4}
-                className="rounded-xl p-4 border border-emerald-400/20 flex items-center gap-3"
-                style={{ background: 'rgba(16,185,129,0.06)' }}>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981] flex-shrink-0" />
-                <p className="text-sm font-semibold text-emerald-400">Available for full-time & freelance work</p>
-              </motion.div>
+              <Reveal custom={4} variants={fadeUp}>
+                <div className="rounded-xl p-4 border border-emerald-400/20 flex items-center gap-3"
+                  style={{ background: 'rgba(16,185,129,0.06)' }}>
+                  <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
+                    className="w-2.5 h-2.5 rounded-full bg-emerald-400 block shadow-[0_0_8px_#10b981] flex-shrink-0" />
+                  <p className="text-sm font-semibold text-emerald-400">Available for full-time & freelance work</p>
+                </div>
+              </Reveal>
             </div>
 
-            {/* Contact form */}
-            <motion.div variants={fadeUp} custom={1} className={`glass ${card} border ${border} rounded-2xl p-8`}>
-              {formSent ? (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-5">✅</div>
-                  <h3 className="text-xl font-black mb-2">Message Sent!</h3>
-                  <p className={`text-sm ${muted}`}>Thanks for reaching out. Moiz will get back to you soon.</p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  <h3 className="font-black text-lg mb-1">Send a Message</h3>
-                  {['name', 'email'].map(f => (
-                    <input key={f} value={form[f]} onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
-                      placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
-                      className={`w-full px-4 py-3.5 rounded-xl text-sm border ${border} transition-all`}
+            <Reveal custom={1} variants={fadeUp}>
+              <motion.div
+                whileHover={{ y: -3 }}
+                className={`glass ${card} border ${border} rounded-2xl p-8`}>
+                {formSent ? (
+                  <div className="text-center py-12">
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }}
+                      className="text-6xl mb-5">✅</motion.div>
+                    <h3 className="text-xl font-black mb-2">Message Sent!</h3>
+                    <p className={`text-sm ${muted}`}>Thanks for reaching out. Moiz will get back to you soon at moizkh369@gmail.com</p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    <h3 className="font-black text-lg mb-1">Send a Message</h3>
+                    {['name', 'email'].map(f => (
+                      <motion.input key={f} whileFocus={{ scale: 1.01 }}
+                        value={form[f]} onChange={e => setForm(p => ({ ...p, [f]: e.target.value }))}
+                        placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
+                        className={`w-full px-4 py-3.5 rounded-xl text-sm border ${border} transition-all`}
+                        style={{ background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', color: 'inherit' }} />
+                    ))}
+                    <motion.textarea whileFocus={{ scale: 1.01 }}
+                      value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
+                      rows={5} placeholder="Message"
+                      className={`w-full px-4 py-3.5 rounded-xl text-sm border ${border} resize-none transition-all`}
                       style={{ background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', color: 'inherit' }} />
-                  ))}
-                  <textarea value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
-                    rows={5} placeholder="Message"
-                    className={`w-full px-4 py-3.5 rounded-xl text-sm border ${border} resize-none transition-all`}
-                    style={{ background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)', color: 'inherit' }} />
-                  <button onClick={() => { if (form.name && form.email && form.message) setFormSent(true) }}
-                    className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all hover:-translate-y-0.5"
-                    style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)', boxShadow: '0 6px 22px rgba(6,182,212,0.3)' }}>
-                    <Send size={15} /> Send Message
-                  </button>
-                </div>
-              )}
-            </motion.div>
+                    <motion.button
+                      whileHover={{ y: -2, boxShadow: '0 10px 28px rgba(6,182,212,0.4)' }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => { if (form.name && form.email && form.message) setFormSent(true) }}
+                      className="flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white"
+                      style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)', boxShadow: '0 6px 22px rgba(6,182,212,0.3)' }}>
+                      <Send size={15} /> Send Message
+                    </motion.button>
+                  </div>
+                )}
+              </motion.div>
+            </Reveal>
           </div>
-        </Section>
+        </section>
 
         {/* ── FOOTER ───────────────────────────────────────────── */}
         <footer className={`border-t ${border} py-8 px-6 text-center`}>
           <p className="grad-text font-black text-xl mb-2">MK.</p>
-          <p className={`text-sm ${muted} mb-4`}>Full Stack Web Developer & Software Engineer · Islamabad, Pakistan</p>
-          <p className={`text-xs ${muted}`}>© 2025 Moiz Khan — Crafted with <span className="grad-text font-bold">passion & precision.</span></p>
+          <p className={`text-sm ${muted} mb-1`}>Full Stack Web Developer & Software Engineer · Islamabad, Pakistan</p>
+          <p className={`text-xs ${muted}`}>© 2026 Moiz Khan — Crafted with <span className="grad-text font-bold">passion & precision.</span></p>
         </footer>
 
       </div>
 
-      {/* ── FLOATING CHATBOT ─────────────────────────────────────── */}
+      {/* ── CHATBOT ──────────────────────────────────────────────── */}
       <div className="fixed bottom-6 right-6 z-50">
         <AnimatePresence>
           {chatOpen && (
@@ -901,15 +1005,15 @@ export default function App() {
                 </button>
               </div>
 
-              {/* Quick prompts */}
               {chatMsgs.length === 1 && (
                 <div className="px-3 pt-3 flex flex-wrap gap-1.5">
-                  {['Skills?', 'Projects?', 'GPA?', 'Hire him?'].map(q => (
-                    <button key={q} onClick={() => { setChatInput(q); setTimeout(() => sendChat(), 50) }}
+                  {['His skills?', 'His projects?', 'GPA?', 'Hire him?', 'Contact?'].map(q => (
+                    <motion.button key={q} whileHover={{ scale: 1.04 }}
+                      onClick={() => { setChatInput(q); setTimeout(() => { const msg = q; setChatInput(''); setChatMsgs(p => [...p, { from: 'user', text: msg }]); setBotTyping(true); setTimeout(() => { setChatMsgs(p => [...p, { from: 'bot', text: getBotReply(msg) }]); setBotTyping(false); }, 500); }, 10) }}
                       className="text-xs px-3 py-1.5 rounded-full border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 transition-colors"
                       style={{ background: 'rgba(6,182,212,0.06)' }}>
                       {q}
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               )}
@@ -921,7 +1025,7 @@ export default function App() {
                       <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2 flex-shrink-0 mt-0.5"
                         style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>🤖</div>
                     )}
-                    <div className={`max-w-[78%] text-xs leading-relaxed px-3.5 py-2.5 rounded-2xl ${
+                    <div className={`max-w-[78%] text-xs leading-relaxed px-3.5 py-2.5 rounded-2xl whitespace-pre-line ${
                       msg.from === 'user' ? 'text-white rounded-br-sm' : `${dark ? 'bg-white/7' : 'bg-black/5'} rounded-bl-sm`
                     }`} style={msg.from === 'user' ? { background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' } : {}}>
                       {msg.text}
@@ -934,8 +1038,9 @@ export default function App() {
                       style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>🤖</div>
                     <div className={`flex gap-1 px-3.5 py-2.5 rounded-2xl rounded-bl-sm ${dark ? 'bg-white/7' : 'bg-black/5'}`}>
                       {[0,1,2].map(j => (
-                        <div key={j} className="w-1.5 h-1.5 rounded-full bg-cyan-400"
-                          style={{ animation: `blink 1.2s ${j*0.2}s ease-in-out infinite` }} />
+                        <motion.div key={j} className="w-1.5 h-1.5 rounded-full bg-cyan-400"
+                          animate={{ y: [0, -4, 0] }}
+                          transition={{ duration: 0.6, delay: j * 0.15, repeat: Infinity }} />
                       ))}
                     </div>
                   </div>
@@ -949,18 +1054,21 @@ export default function App() {
                   placeholder="Ask about Moiz..."
                   className={`flex-1 text-xs px-3.5 py-2.5 rounded-xl border ${border} outline-none`}
                   style={{ background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)', color: 'inherit' }} />
-                <button onClick={sendChat}
+                <motion.button onClick={sendChat} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.93 }}
                   className="w-9 h-9 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                   style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>
                   <Send size={13} />
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <button onClick={() => setChatOpen(o => !o)}
-          className="pulse-ring relative w-14 h-14 rounded-full text-white text-xl flex items-center justify-center shadow-lg transition-transform hover:scale-105"
+        <motion.button
+          onClick={() => setChatOpen(o => !o)}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.93 }}
+          className="pulse-ring relative w-14 h-14 rounded-full text-white text-xl flex items-center justify-center shadow-lg"
           style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)', boxShadow: '0 8px 28px rgba(6,182,212,0.4)' }}>
           <AnimatePresence mode="wait">
             {chatOpen
@@ -968,7 +1076,7 @@ export default function App() {
               : <motion.span key="bot" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>🤖</motion.span>
             }
           </AnimatePresence>
-        </button>
+        </motion.button>
       </div>
 
     </div>
