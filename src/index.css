@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  cursor: none !important;
+  overflow-x: hidden;
+}
+
+*, a, button { cursor: none !important; }
+
+/* Custom cursor */
+.cursor-outer {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(6,182,212,0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+  mix-blend-mode: difference;
+}
+.cursor-outer.expanded {
+  width: 56px; height: 56px;
+  background: rgba(6,182,212,0.08);
+  border-color: #06b6d4;
+}
+.cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 99999;
+  width: 6px; height: 6px;
+  background: #06b6d4;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px #06b6d4, 0 0 20px rgba(6,182,212,0.4);
+}
+
+/* Gradient text utility */
+.grad-text {
+  background: linear-gradient(135deg, #06b6d4 0%, #818cf8 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism */
+.glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Typewriter cursor */
+@keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+.type-cursor { animation: blink 1s step-end infinite; color: #06b6d4; }
+
+/* Floating animation */
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50%      { transform: translateY(-12px); }
+}
+.float { animation: float 5s ease-in-out infinite; }
+
+/* Gradient orbs */
+@keyframes orb-drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(40px,-30px) scale(1.08); }
+  66%      { transform: translate(-25px,35px) scale(0.96); }
+}
+.orb-1 { animation: orb-drift 14s ease-in-out infinite; }
+.orb-2 { animation: orb-drift 18s ease-in-out infinite reverse; }
+.orb-3 { animation: orb-drift 11s ease-in-out infinite 3s; }
+
+/* Marquee */
+@keyframes marquee-ltr { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
+@keyframes marquee-rtl { 0% { transform:translateX(-50%); } 100% { transform:translateX(0); } }
+.marquee-ltr { animation: marquee-ltr 28s linear infinite; }
+.marquee-rtl { animation: marquee-rtl 24s linear infinite; }
+.marquee-ltr:hover, .marquee-rtl:hover { animation-play-state: paused; }
+
+/* Heatmap cell */
+.hm-cell { border-radius: 3px; transition: transform 0.1s, box-shadow 0.1s; cursor: none; }
+.hm-cell:hover { transform: scale(1.6); box-shadow: 0 0 8px rgba(6,182,212,0.5); }
+
+/* Chatbot slide-up */
+@keyframes slideUp { from { opacity:0; transform:translateY(16px) scale(0.96); } to { opacity:1; transform:translateY(0) scale(1); } }
+.chat-window { animation: slideUp 0.22s ease; }
+
+/* Pulse ring on chatbot button */
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #06b6d4;
+  animation: pulse-ring 2.2s ease-out infinite;
+}
+
+/* Section reveal via Framer Motion — just ensures no FOUC */
+section { will-change: opacity, transform; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(6,182,212,0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(6,182,212,0.5); }
+
+/* Input focus ring */
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(6,182,212,0.35);
+}
+
+/* Nav underline */
+.nav-link {
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1.5px;
+  background: linear-gradient(90deg, #06b6d4, #a855f7);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+.nav-link:hover::after { width: 100%; }
