@@ -1,0 +1,72 @@
+[
+  {
+    "id": "identity",
+    "category": "Identity",
+    "content": "Moiz Khan is a Full Stack Web Developer and Software Engineer based in H9, Islamabad, Pakistan. He is currently completing his BSc Software Engineering at NUML (National University of Modern Languages), graduating in 2026 with a 3.9/4.0 GPA (Distinction level). He is actively seeking full-time roles in full stack development, frontend, backend, mobile app development, or AI-integrated web development. He is open to remote work globally and on-site positions."
+  },
+  {
+    "id": "latest_project_fyp",
+    "category": "Projects",
+    "content": "Moiz's latest and most significant project is the Automated Dermatology Assistant — his Final Year Project (FYP). It is a fully-fledged AI healthcare web platform built with Django, Next.js, SQL, and integrated AI models. It detects 2 major skin conditions with 85%+ accuracy in under 2 seconds. Key features include a patient dashboard for skin health tracking, real-time appointment booking from home, location-based dermatologist matching, and full scan history. Moiz developed both the frontend and backend himself entirely. He designed it to be potentially commercialized and — reflecting on lessons learned — he would now architect it with cleaner separation of concerns, more modular AI pipeline design, and a commercialization-ready structure from day one. His goal is to push the AI model accuracy beyond 90% before graduation."
+  },
+  {
+    "id": "project_jewellery",
+    "category": "Projects",
+    "content": "Moiz built a Jewellery Store Management System using the full MERN stack (MongoDB, Express, React, Node.js) between November and December 2025. It handles 500+ products with a robust RESTful API, admin dashboard, rapid database querying, and a fully responsive React frontend. This project demonstrates his end-to-end MERN stack proficiency."
+  },
+  {
+    "id": "project_arts_crafts",
+    "category": "Projects",
+    "content": "Moiz built an Arts & Crafts eCommerce Platform (October to November 2024) supporting 1000+ concurrent users using HTML, CSS, JavaScript, PHP, and SQL. It features secure user authentication, input validation, real-time database integrations, and full order management. This showcases his full-stack PHP/SQL experience."
+  },
+  {
+    "id": "project_parking",
+    "category": "Projects",
+    "content": "Moiz's first project was a Car Parking Management System (2022) built with Java and C++, tracking 5000+ vehicles with automated billing and real-time slot management. He migrated the original C++ console application to a Java GUI, achieving a 100% workflow efficiency improvement. This demonstrates his foundational OOP and desktop application skills."
+  },
+  {
+    "id": "tech_stack",
+    "category": "Skills",
+    "content": "Moiz's full technical stack: Languages: Python, JavaScript, Java, C++, HTML, CSS, SQL, PHP. Frameworks: Django, React, Next.js, Node.js, Express.js, AJAX, WordPress. Mobile: Android Studio (built a mobile application as an academic project — genuinely enjoyed it and wants to do more). Databases: MySQL/PostgreSQL (SQL), MongoDB. Tools: GitHub, Visual Studio, Android Studio. He is currently most excited about efficient AI integration in web applications to help businesses automate and scale."
+  },
+  {
+    "id": "ai_focus",
+    "category": "Skills",
+    "content": "Moiz is actively focused on AI integration in web development. His FYP involved AI model integration for medical image analysis achieving 85%+ accuracy. He is passionate about building AI-powered products that help businesses run smoother, automate repetitive processes, and make intelligent decisions. He is currently learning advanced AI integration patterns for web applications."
+  },
+  {
+    "id": "work_philosophy",
+    "category": "Work Style",
+    "content": "Moiz builds from prototypes or from scratch depending on the project. His workflow: build it professional and visually polished first, make it fully functional, then test relentlessly — trying edge cases and exceptional inputs to ensure nothing breaks under any circumstance. He is extremely detail-oriented, almost a perfectionist: every pixel, every function, every user flow must work flawlessly before shipping. He believes quality over speed, thoroughness over shortcuts."
+  },
+  {
+    "id": "personality_leadership",
+    "category": "Personality",
+    "content": "Teammates would describe Moiz as a strict but deeply cooperative leader. As a team lead, he holds everyone to high standards because he understands that individual excellence leads to collective success. He is not just demanding — he actively guides and mentors team members, gives suggestions to improve the product, and lifts the whole team's level. He is collaborative, communicative, and driven by a desire for perfect results. He has led multiple technical teams to successful project delivery."
+  },
+  {
+    "id": "career_goals",
+    "category": "Career",
+    "content": "Moiz's primary career target is a Full Stack Developer role. He is also genuinely open to Frontend Developer, Backend Developer, Mobile App Developer (he really enjoyed Android development), or AI-integrated web development roles. His long-term vision is to use AI in web products to help businesses automate, scale, and grow. He is available for full-time employment, freelance projects, and is open to both remote and on-site arrangements globally."
+  },
+  {
+    "id": "relocation_availability",
+    "category": "Availability",
+    "content": "Moiz is open to relocation and remote work. He is flexible — remote work globally works for him, as does on-site work. He is actively seeking his first full-time developer role and is also open to freelance and internship opportunities. He is ready to start immediately. Best contact: moizkh369@gmail.com or 03335016753."
+  },
+  {
+    "id": "education",
+    "category": "Education",
+    "content": "Moiz is pursuing a BSc Software Engineering at NUML (National University of Modern Languages) in Islamabad, Pakistan. Started September 2022, graduating 2026. GPA: 3.9 out of 4.0 — Distinction level. He achieved this while simultaneously building 4 real-world projects across different technology stacks. His academic excellence reflects the same perfectionist attitude he brings to his code."
+  },
+  {
+    "id": "hobbies_interests",
+    "category": "Personal",
+    "content": "Outside of coding, Moiz is passionate about gym and fitness — he believes the discipline required for fitness carries directly into writing better, more structured code. He listens to music to fuel deep focus sessions, enjoys vibe coding (building things for fun), practices daily self-improvement, and loves exploring new technologies and experiences. He is a well-rounded person who believes a sharp mind needs a sharp life."
+  },
+  {
+    "id": "contact",
+    "category": "Contact",
+    "content": "How to reach Moiz Khan: Email: moizkh369@gmail.com | Phone: 03335016753 | Location: H9, Islamabad, Pakistan | LinkedIn: linkedin.com/in/moizkhan369. He is highly responsive and happy to connect for full-time roles, freelance projects, collaborations, or just a chat about tech. The best way is email for professional enquiries."
+  }
+]
