@@ -8,103 +8,10 @@ import {
   ArrowRight, Cpu, Globe, Server, Sparkles,
   Terminal, Coffee, Rocket, Users
 } from 'lucide-react'
+import ChatBot from './components/ChatBot'
 
 // ─── CHATBOT ──────────────────────────────────────────────────────────────────
 
-function getBotReply(rawMsg) {
-  const m = rawMsg.toLowerCase()
-    .replace(/\b(he|his|him|this guy|this person|this developer|their|they)\b/g, 'moiz')
-    .replace(/\b(my|i am|i'm|i've|i have|i do|i know|i built|i work|i use|i can|myself)\b/g, 'moiz')
-    .replace(/\bme\b/g, 'moiz')
-
-  if (m.match(/^(hi|hey|hello|sup|yo|howdy)[\s!?]*$/))
-    return "Hey! 👋 I'm Moiz-Bot, trained on Moiz's full resume. Ask me anything — skills, projects, GPA, availability, or how to hire him. Or just say 'tell me everything'!"
-
-  if (m.match(/who are you|what are you|introduce yourself|what is this bot/))
-    return "I'm Moiz-Bot 🤖 — an AI assistant built into this portfolio, trained on Moiz Khan's resume. I can answer anything about his skills, projects, education, experience, and how to get in touch!"
-
-  if (m.match(/tell me everything|full overview|full summary|complete profile|everything about/))
-    return "Here's the full picture 🗂️\n\nMoiz Khan is a Full Stack Web Developer & Software Engineer from Islamabad, Pakistan. BSc Software Engineering at NUML with a 3.9/4.0 GPA. He's built 4 real projects: AI Dermatology App (FYP), MERN Jewellery Store, Arts & Crafts eCommerce, and a Java/C++ Parking System. Stack: Python, Django, React, Node.js, MERN, SQL, AI Integration. Open to full-time & freelance work.\n\n📩 moizkh369@gmail.com"
-
-  if (m.match(/summar|about|who is|overview|professional|background|descri|what does moiz do|what do/))
-    return "Moiz is a passionate Full Stack Web Developer & Software Engineer dedicated to building robust, end-to-end web applications. He's a natural leader, highly detail-oriented, and committed to delivering flawless solutions from conception to deployment. His vision: leverage advanced technologies to build scalable, revolutionary products with a positive global impact. 🌍"
-
-  if (m.match(/skill|tech|language|framework|stack|know|use|work with|tool|capabilit|expertise|proficien|what can/))
-    return "From his resume 📋\n\n💻 Languages: Python, Java, C++, JavaScript, HTML, CSS, SQL\n⚙️ Frameworks: React, Node.js, Django, Express.js, AJAX, WordPress\n🗄️ Databases: SQL, MongoDB\n🛠️ Tools: GitHub, Visual Studio, Android Studio\n🧠 Soft Skills: Leadership, Team Collaboration, Problem Solving, Project Management"
-
-  if (m.match(/project|portfolio|what.*(built|made|creat|develop|work)/))
-    return "Moiz has 4 projects on his resume 🚀\n\n🩺 AI Dermatology Assistant (FYP) — Django, Python, AI\n💎 Jewellery Store — MERN Stack (500+ products)\n🎨 Arts & Crafts eCommerce — PHP/SQL (1000+ users)\n🚗 Car Parking System — Java/C++ (5000+ vehicles)\n\nAsk about any one for full details!"
-
-  if (m.match(/dermatol|skin|fyp|final year|healthcare|ai project|85|detection/))
-    return "🩺 Automated Dermatology Assistant (FYP) — Mar 2025 to May 2026\n\nAI-integrated healthcare web app detecting 2 major skin conditions with 85%+ accuracy in under 2 seconds. Includes:\n• Patient dashboard for skin health tracking\n• Location-based dermatologist matching\n• Appointment booking system\n\nStack: Django, SQL, Python, AI Integration"
-
-  if (m.match(/jewel|mern|ecommerce.*mern|mongodb|500.*product/))
-    return "💎 Jewellery Store Management System — Nov to Dec 2025\n\nFull-stack e-commerce portal handling 500+ products. Features:\n• Responsive React frontend\n• RESTful API for catalog & pricing\n• Rapid database querying\n\nStack: MongoDB, Express.js, React, Node.js (MERN)"
-
-  if (m.match(/art|craft|php|1000.*user|ecommerce.*php/))
-    return "🎨 Arts & Crafts eCommerce Platform — Oct to Nov 2024\n\nNiche eCommerce platform supporting 1000+ concurrent users. Features:\n• Secure user authentication & input validation\n• Real-time database integrations\n• Full shopping & order management\n\nStack: HTML, CSS, JavaScript, PHP, SQL"
-
-  if (m.match(/park|car|5000|java.*project|desktop|c\+\+.*project/))
-    return "🚗 Car Parking Management System — Oct to Nov 2022\n\nCentralized admin software tracking 5000+ vehicles with automated billing. Achievements:\n• 100% workflow efficiency improvement\n• Digitized entire manual entry system\n• Migrated C++ console to Java GUI\n\nStack: Java, C++, GUI Design, OOP"
-
-  if (m.match(/edu|degree|university|numl|study|student|academ|school|college|qualif/))
-    return "🎓 BSc Software Engineering\nNational University of Modern Languages (NUML), Islamabad\n📅 September 2022 – Present\n⭐ GPA: 3.9 / 4.0 — Distinction level"
-
-  if (m.match(/gpa|grade|result|cgpa|mark|score|3\.9|distinction/))
-    return "Moiz has a GPA of 3.9 out of 4.0 at NUML 🏆 — distinction level. Impressive considering he simultaneously shipped 4 real-world projects during his studies!"
-
-  if (m.match(/contact|email|phone|reach|number|call|message|get in touch|how to.*contact/))
-    return "📬 Here's how to reach Moiz:\n\n📧 Email: moizkh369@gmail.com\n📞 Phone: 03335016753\n📍 Location: H9, Islamabad, Pakistan\n\nHe's responsive and happy to connect!"
-
-  if (m.match(/hire|job|opportun|availab|freelance|intern|recruit|open to|looking for|employ|position|role/))
-    return "Yes! Moiz is actively open to full-time roles, freelance projects, and internship opportunities 🚀 Remote and on-site both work. Best way: moizkh369@gmail.com or 03335016753."
-
-  if (m.match(/hobb|interest|life|outside|personal|gym|music|vibe|free time|fun/))
-    return "Outside of coding, Moiz is into 💪 Gym & Fitness, 🎵 Music, ⚡ Vibe Coding sessions, 📈 Self Improvement, and 🌍 Exploring New Things. He believes a sharp developer needs a sharp life!"
-
-  if (m.match(/english|urdu|speak|language.*speak|spoken/))
-    return "Moiz speaks English at a professional proficiency level and Urdu natively. 🌐"
-
-  if (m.match(/soft skill|leader|team|collaborat|manag|communicat|strength|best at/))
-    return "His resume highlights: Leadership, Team Collaboration, Problem Solving, Project Management, and Detail-Oriented. He's led multiple technical teams to successful delivery. 💼"
-
-  if (m.match(/python|django/))
-    return "Python and Django are core to Moiz's backend stack. His FYP uses Django with AI integration. He builds Django REST APIs and is comfortable with SQL databases. 🐍"
-
-  if (m.match(/react|frontend|ui/))
-    return "Moiz builds frontends with React.js — demonstrated in his MERN Jewellery Store with a fully responsive UI and RESTful API integration. ⚛️"
-
-  if (m.match(/node|express|mern/))
-    return "Full MERN stack (MongoDB, Express, React, Node.js) is one of Moiz's core stacks. His Jewellery Store project is a complete MERN application. 🟢"
-
-  if (m.match(/sql|database|mongo/))
-    return "Moiz works with both SQL (Dermatology App, Arts & Crafts) and MongoDB (MERN Jewellery Store). Database design is a consistent part of every project he's built. 🗄️"
-
-  if (m.match(/java|c\+\+|oop/))
-    return "Java and C++ are part of Moiz's foundational skills — used in his Car Parking System with OOP principles and a Java GUI desktop app. ☕"
-
-  if (m.match(/wordpress|ajax/))
-    return "WordPress and AJAX are in Moiz's skills — useful for CMS-based projects and dynamic frontend interactions. 🌐"
-
-  if (m.match(/github|git|version control/))
-    return "GitHub is Moiz's version control tool of choice — listed in his tools section and used across all projects. 🐙"
-
-  // General programming / tech questions
-  if (m.match(/what is react|what is django|what is mern|what is node|what is python/))
-    return "Great tech question! While I'm focused on Moiz's profile, I can say he works hands-on with these technologies daily. Want to know specifically how he uses them in his projects? 😊"
-
-  if (m.match(/best language|best framework|which is better/))
-    return "That's a great debate! From Moiz's experience: Python/Django shines for backend & AI, React for frontend, and Node.js for real-time apps. He picks the right tool for the job rather than one-size-fits-all. 🛠️"
-
-  if (m.match(/salary|pay|compensat|expect|rate/))
-    return "For salary or rate details, that's best discussed directly with Moiz 😊 Reach him at moizkh369@gmail.com — he's open to negotiation based on the role and scope."
-
-  if (m.match(/cv|resume|download/))
-    return "You can download Moiz's full resume using the 'Download Resume' button at the top of this page! It has all his project details, skills, and education. 📄"
-
-  // Fallback — always mention email
-  return "That's a great question! For more personalised queries like this, reach out to Moiz directly at 📧 moizkh369@gmail.com — he'll be happy to answer in detail. Or try asking me about his skills, projects, education, or availability! 🚀"
-}
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -342,15 +249,9 @@ export default function App() {
   const [charIdx, setCharIdx] = useState(0)
   const [typing, setTyping] = useState(true)
   const [scrollPct, setScrollPct] = useState(0)
-  const [chatOpen, setChatOpen] = useState(false)
-  const [chatMsgs, setChatMsgs] = useState([
-    { from: 'bot', text: "Hi! I'm Moiz-Bot 🤖 Trained on Moiz's full resume. Ask me anything about his skills, projects, GPA, or how to hire him!" }
-  ])
-  const [chatInput, setChatInput] = useState('')
-  const [botTyping, setBotTyping] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [formSent, setFormSent] = useState(false)
-  const chatEndRef = useRef(null)
+  
 
   useEffect(() => { document.documentElement.classList.toggle('dark', dark) }, [dark])
 
@@ -379,7 +280,6 @@ export default function App() {
     return () => clearTimeout(t)
   }, [typeText, charIdx, typing, typeIdx])
 
-  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [chatMsgs])
 
   const sendChat = useCallback(() => {
     if (!chatInput.trim() || botTyping) return
@@ -979,105 +879,7 @@ export default function App() {
       </div>
 
       {/* ── CHATBOT ──────────────────────────────────────────────── */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <AnimatePresence>
-          {chatOpen && (
-            <motion.div key="chat"
-              initial={{ opacity: 0, y: 16, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className={`absolute bottom-16 right-0 w-[340px] glass border ${border} rounded-2xl overflow-hidden shadow-2xl`}
-              style={{ background: dark ? 'rgba(6,10,26,0.97)' : 'rgba(255,255,255,0.97)' }}>
-
-              <div className="flex items-center justify-between px-4 py-3.5"
-                style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-lg">🤖</div>
-                  <div>
-                    <p className="text-white text-sm font-bold leading-none">Moiz-Bot</p>
-                    <p className="text-white/70 text-xs mt-0.5">Trained on Moiz's full resume</p>
-                  </div>
-                </div>
-                <button onClick={() => setChatOpen(false)}
-                  className="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center text-white hover:bg-white/25 transition-colors">
-                  <X size={13} />
-                </button>
-              </div>
-
-              {chatMsgs.length === 1 && (
-                <div className="px-3 pt-3 flex flex-wrap gap-1.5">
-                  {['His skills?', 'His projects?', 'GPA?', 'Hire him?', 'Contact?'].map(q => (
-                    <motion.button key={q} whileHover={{ scale: 1.04 }}
-                      onClick={() => { setChatInput(q); setTimeout(() => { const msg = q; setChatInput(''); setChatMsgs(p => [...p, { from: 'user', text: msg }]); setBotTyping(true); setTimeout(() => { setChatMsgs(p => [...p, { from: 'bot', text: getBotReply(msg) }]); setBotTyping(false); }, 500); }, 10) }}
-                      className="text-xs px-3 py-1.5 rounded-full border border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10 transition-colors"
-                      style={{ background: 'rgba(6,182,212,0.06)' }}>
-                      {q}
-                    </motion.button>
-                  ))}
-                </div>
-              )}
-
-              <div className="h-64 overflow-y-auto p-4 flex flex-col gap-3">
-                {chatMsgs.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    {msg.from === 'bot' && (
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2 flex-shrink-0 mt-0.5"
-                        style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>🤖</div>
-                    )}
-                    <div className={`max-w-[78%] text-xs leading-relaxed px-3.5 py-2.5 rounded-2xl whitespace-pre-line ${
-                      msg.from === 'user' ? 'text-white rounded-br-sm' : `${dark ? 'bg-white/7' : 'bg-black/5'} rounded-bl-sm`
-                    }`} style={msg.from === 'user' ? { background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' } : {}}>
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-                {botTyping && (
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>🤖</div>
-                    <div className={`flex gap-1 px-3.5 py-2.5 rounded-2xl rounded-bl-sm ${dark ? 'bg-white/7' : 'bg-black/5'}`}>
-                      {[0,1,2].map(j => (
-                        <motion.div key={j} className="w-1.5 h-1.5 rounded-full bg-cyan-400"
-                          animate={{ y: [0, -4, 0] }}
-                          transition={{ duration: 0.6, delay: j * 0.15, repeat: Infinity }} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              <div className={`flex gap-2 p-3 border-t ${border}`}>
-                <input value={chatInput} onChange={e => setChatInput(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && sendChat()}
-                  placeholder="Ask about Moiz..."
-                  className={`flex-1 text-xs px-3.5 py-2.5 rounded-xl border ${border} outline-none`}
-                  style={{ background: dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)', color: 'inherit' }} />
-                <motion.button onClick={sendChat} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.93 }}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white flex-shrink-0"
-                  style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)' }}>
-                  <Send size={13} />
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <motion.button
-          onClick={() => setChatOpen(o => !o)}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.93 }}
-          className="pulse-ring relative w-14 h-14 rounded-full text-white text-xl flex items-center justify-center shadow-lg"
-          style={{ background: 'linear-gradient(135deg,#06b6d4,#7c3aed)', boxShadow: '0 8px 28px rgba(6,182,212,0.4)' }}>
-          <AnimatePresence mode="wait">
-            {chatOpen
-              ? <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}><X size={20} /></motion.span>
-              : <motion.span key="bot" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>🤖</motion.span>
-            }
-          </AnimatePresence>
-        </motion.button>
-      </div>
+      <ChatBot dark={dark} />
 
     </div>
   )
