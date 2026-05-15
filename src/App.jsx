@@ -281,18 +281,6 @@ export default function App() {
   }, [typeText, charIdx, typing, typeIdx])
 
 
-  const sendChat = useCallback(() => {
-    if (!chatInput.trim() || botTyping) return
-    const msg = chatInput.trim()
-    setChatInput('')
-    setChatMsgs(prev => [...prev, { from: 'user', text: msg }])
-    setBotTyping(true)
-    setTimeout(() => {
-      setChatMsgs(prev => [...prev, { from: 'bot', text: getBotReply(msg) }])
-      setBotTyping(false)
-    }, 500 + Math.random() * 400)
-  }, [chatInput, botTyping])
-
   // Theme tokens
   const bg     = dark ? 'bg-[#050818]' : 'bg-slate-50'
   const card   = dark ? 'bg-[#0d1225]/80' : 'bg-white/85'
